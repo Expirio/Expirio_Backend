@@ -5,7 +5,7 @@
 
 
 ## TODO:
-
+- [ ] Mukesh, add your email contact and/or skype into this readme (at the bottom)
 - [ ] We need to encrypt and decrypt a text using a password (same for both). 
 - [ ] We need to hash a password and check that the same password match with the hash created. 
 - [ ] We need to use GUIDS to generate random strings (this will be used for the URLS, but for now this functionality is fine)
