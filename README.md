@@ -24,12 +24,14 @@ very good: https://github.com/ramsey/uuid
 >
 > - RELAX, AND ENJOY!, we also understand how hard is coding......too much!
 
+
+--- 
+
 For any doubt, catch up, question:
 
+francis.jaa@blurbit.co.uk (developer)
 
-email: francis.jaa@blurbit.co.uk (developer)
-
-email: eerrecalde@gmail.com (developer)
+eerrecalde@gmail.com (developer)
 
 Skype: francis.jaa
 
