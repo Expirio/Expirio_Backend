@@ -2,16 +2,6 @@
 > Expirio
 
 
-
-
-## TODO:
-- [ ] Mukesh, add your email contact and/or skype into this readme (at the bottom)
-- [ ] We need to encrypt and decrypt a text using a password (same for both). Create a simple class that encrypt and decrypt, with tests.
-- [ ] We need to hash a password and check that the same password match with the hash created. Create a Hasher class that can hash and check if the hash of string match to another one. With tests.
-- [ ] We need to use GUIDS to generate random strings (this will be used for the URLS, but for now this functionality is fine). Create a class that can generate random Guids. 
-- [ ] < More coming >, I will update this tomorrow with more indications. 
-
-
 ### Notes:
 > - **PLEASE, USE PHP-7**, is a new web app and we don't want to update it in the early future.
 >
