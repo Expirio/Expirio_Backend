@@ -1,6 +1,8 @@
 > Expirio
 
 
+
+
 ## TODO:
 
 - [ ] We need to encrypt and decrypt a text using a password (same for both). 
@@ -20,5 +22,13 @@
 very good: https://github.com/ramsey/uuid
 >
 > - RELAX, AND ENJOY!, we also understand how hard is coding......too much!
+
+For any doubt, catch up, question:
+
+email: francis.jaa@blurbit.co.uk (developer)
+email: eerrecalde@gmail.com (developer)
+Skype: francis.jaa
+
+
 
 
