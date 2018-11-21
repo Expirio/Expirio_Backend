@@ -63,6 +63,17 @@ class SlotsManagerRedisTest extends TestCase
 		);
 	}
 
+	/**
+	 * @test
+	 */
+	public function can_read_secret()
+	{
+		$readUid = Uuid::uuid4()->toString();
+
+		$this->fail('not implemented yet');
+	}
+
+
 	public function tearDown()
 	{
 		$this->redis->flushall();

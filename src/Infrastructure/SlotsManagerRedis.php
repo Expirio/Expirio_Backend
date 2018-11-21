@@ -35,6 +35,5 @@ class SlotsManagerRedis
 
 		$this->redis->hdel($readUid, ['password']);
 		$this->redis->hset($readUid, 'secret', $secretText);
-
 	}
 }
