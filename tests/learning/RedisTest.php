@@ -86,7 +86,7 @@ class RedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function can_check_exist_a_field_in_hash()
+	public function can_check_specific_fields_of_hash()
 	{
 		$hash = ['country' => 'Africa', 'age' => 12];
 
@@ -94,6 +94,21 @@ class RedisTest extends TestCase
 
 		$this->assertSame(1, $this->redis->hexists('person', 'age'));
 		$this->assertSame(0, $this->redis->hexists('person', 'non_existing'));
+		$this->assertSame('Africa', $this->redis->hget('person', 'country'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function can_remove_key()
+	{
+		$hash = ['country' => 'Africa', 'age' => 12];
+
+		$this->redis->hmset('person', $hash);
+
+		$this->redis->del(['person']);
+		$this->assertSame(0, $this->redis->exists('person'));
+
 	}
 
 	public function tearDown()

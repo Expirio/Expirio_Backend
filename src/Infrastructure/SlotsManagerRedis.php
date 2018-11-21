@@ -14,18 +14,28 @@ class SlotsManagerRedis
 		$this->redis = $redis;
 	}
 
-	public function createPairSlots(CreatePairSlotsCommand $command)
+	public function createPairSlots(string $writeUid, string $readUid, string $password)
 	{
 		// create read slot
 		$this->redis->hmset(
-			$command->getReadUid(),
-			['password' => $command->getReadPassword()]
+			$readUid,
+			['password' => $password]
 		);
 
 		// create write slot
 		$this->redis->hmset(
-			$command->getWriteUid(),
-			['read_slot' => $command->getReadUid()]
+			$writeUid,
+			['read_slot' => $readUid]
 		);
+	}
+
+	public function writeSecret($writeUid, $secretText)
+	{
+		$readUid = $this->redis->hget($writeUid, 'read_slot');
+		$this->redis->del($writeUid);
+
+		$this->redis->hdel($readUid, ['password']);
+		$this->redis->hset($readUid, 'secret', $secretText);
+
 	}
 }
