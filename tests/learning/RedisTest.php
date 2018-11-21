@@ -70,6 +70,32 @@ class RedisTest extends TestCase
 		$this->assertSame(['country' => 'Africa'], $hashRead);
 	}
 
+	/**
+	 * @test
+	 */
+	public function can_check_exist_a_key()
+	{
+		$hash = ['country' => 'Africa', 'age' => 12];
+
+		$this->redis->hmset('person', $hash);
+
+		$this->assertSame(1, $this->redis->exists('person'));
+		$this->assertSame(0, $this->redis->exists('non_existing'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function can_check_exist_a_field_in_hash()
+	{
+		$hash = ['country' => 'Africa', 'age' => 12];
+
+		$this->redis->hmset('person', $hash);
+
+		$this->assertSame(1, $this->redis->hexists('person', 'age'));
+		$this->assertSame(0, $this->redis->hexists('person', 'non_existing'));
+	}
+
 	public function tearDown()
 	{
 		$this->redis->flushall();
