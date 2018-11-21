@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure;
 
-use App\Application\CreatePairSlotsCommand;
 use Predis\Client;
 
 class SlotsManagerRedis
