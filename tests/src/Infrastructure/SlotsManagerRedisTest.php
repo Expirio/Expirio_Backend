@@ -10,13 +10,23 @@ use Ramsey\Uuid\Uuid;
 
 class SlotsManagerRedisTest extends TestCase
 {
+	/** @var Client */
 	private $redis;
 
 	/** @var SlotsManagerRedis */
 	private $manager;
 
+	/** @var String */
+	private $readuid;
+
+	/** @var String */	
+	private $writeuidl;
+
 	public function setUp()
 	{
+		$this->readuid = Uuid::uuid4()->toString();
+		$this->writeuid = Uuid::uuid4()->toString();
+
 		$this->redis = new Client([
 			"host" => "localhost",
 			"port" => 6379
@@ -29,36 +39,30 @@ class SlotsManagerRedisTest extends TestCase
 	 * @test
 	 */
 	public function can_create_read_and_write()
-	{
-		$writeUid = Uuid::uuid4()->toString();
-		$readUid = Uuid::uuid4()->toString();
+	{		
+		$this->manager->createPairSlots($this->writeuid, $this->readuid, 'user-password');
 
-		$this->manager->createPairSlots($writeUid, $readUid, 'user-password');
-
-		$this->assertSame(['password' => 'user-password'], $this->redis->hgetAll($readUid));
-		$this->assertSame(['read_slot' => $readUid], $this->redis->hgetAll($writeUid));
-	}
+		$this->assertSame(['password' => 'user-password'], $this->redis->hgetAll($this->readuid));
+		$this->assertSame(['read_slot' => $this->readuid], $this->redis->hgetAll($this->writeuid));
+	}	
 
 	/**
 	 * @test
 	 */
 	public function can_write_secret()
 	{
-		$writeUid = Uuid::uuid4()->toString();
-		$readUid = Uuid::uuid4()->toString();
-
-		$this->manager->createPairSlots($writeUid, $readUid, 'user-password');
-		$this->manager->writeSecret($writeUid, "this text should be secret");
+		$this->manager->createPairSlots($this->writeuid, $this->readuid, 'user-password');
+		$this->manager->writeSecret($this->writeuid, "this text should be secret");
 
 		$this->assertSame(
 			0,
-			$this->redis->exists($writeUid),
+			$this->redis->exists($this->writeuid),
 			'The write slot has dissapeared'
 		);
 
 		$this->assertSame(
 			['secret' => "this text should be secret"],
-			$this->redis->hgetAll($readUid),
+			$this->redis->hgetAll($this->readuid),
 			'The read slot only contain the secret (encoded), and the pasword is also deleted'
 		);
 	}
@@ -70,7 +74,7 @@ class SlotsManagerRedisTest extends TestCase
 	{
 		$readUid = Uuid::uuid4()->toString();
 
-		$this->fail('not implemented yet');
+		$this->markTestSkipped('not implemented yet');
 	}
 
 
@@ -79,5 +83,4 @@ class SlotsManagerRedisTest extends TestCase
 		$this->redis->flushall();
 		$this->redis->flushdb();
 	}
-
 }
