@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domain;
+namespace App\Domain\ReadSlot;
 
-class ReadSlotWasExpired
+class SecretWasRead
 {
 	private $guid;
 

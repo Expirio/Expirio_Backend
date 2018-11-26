@@ -2,10 +2,11 @@
 
 namespace App\Tests\src\domain;
 
-use App\Domain\ReadSlot;
-use App\Domain\SecretWasRead;
-use App\Domain\SecretWasWrittenInReadSlot;
-use App\Domain\UsedWrongPasswordWhenReading;
+
+use App\Domain\ReadSlot\ReadSlot;
+use App\Domain\ReadSlot\SecretWasRead;
+use App\Domain\ReadSlot\SecretWasWrittenInReadSlot;
+use App\Domain\ReadSlot\UsedWrongPasswordWhenReading;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -16,10 +17,10 @@ class ReadSlotTest extends TestCase
 	 */
 	public function return_null_if_wrong_password()
 	{
-		$read = ReadSlot::withPassword(
+		$read = (new ReadSlot(
 			Uuid::uuid4()->toString(),
 			'sesamo1234'
-		)->setSecret('this is my secret');
+		))->setSecret('this is my secret');
 
 		$this->assertNull($read->getSecret('wrong password'));
 
@@ -34,10 +35,10 @@ class ReadSlotTest extends TestCase
 	 */
 	public function can_decrypt_secret_with_proper_password()
 	{
-		$read = ReadSlot::withPassword(
+		$read = (new ReadSlot(
 			Uuid::uuid4()->toString(),
 			'sesamo1234'
-		)->setSecret('this is my secret');
+		))->setSecret('this is my secret');
 
 		$this->assertEquals(
 			'this is my secret',

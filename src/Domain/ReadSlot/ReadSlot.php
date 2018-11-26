@@ -1,5 +1,5 @@
 <?php
-namespace App\Domain;
+namespace App\Domain\ReadSlot;
 
 
 class ReadSlot
@@ -10,15 +10,10 @@ class ReadSlot
 
 	private $events = [];
 
-	private function __construct($guid, $pass = null)
+	public function __construct($guid, $password, $expiration = null)
 	{
 		$this->guid = $guid;
-		$this->password = $pass;
-	}
-
-	public static function withPassword(String $guid, String $pass)
-	{
-		return new self($guid, $pass, null);
+		$this->password = $password;
 	}
 
 	public function getSecret(String $clearPassword)
