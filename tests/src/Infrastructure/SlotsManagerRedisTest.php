@@ -72,8 +72,6 @@ class SlotsManagerRedisTest extends TestCase
 	 */
 	public function can_read_secret()
 	{
-		$readUid = Uuid::uuid4()->toString();
-
 		$this->markTestSkipped('not implemented yet');
 	}
 
