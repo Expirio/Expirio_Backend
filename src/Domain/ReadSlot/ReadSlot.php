@@ -18,6 +18,12 @@ class ReadSlot
 
 	public function getSecret(String $clearPassword)
 	{
+		if (null == $this->secret) {
+			$this->events[] = new AttemptedReadUnexistingSecret($this->guid);
+
+			return null;
+		}
+
 		if (sha1($clearPassword) === $this->password) {
 			$this->events[] = new SecretWasRead($this->guid);
 

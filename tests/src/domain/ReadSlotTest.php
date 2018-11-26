@@ -3,6 +3,7 @@
 namespace App\Tests\src\domain;
 
 
+use App\Domain\ReadSlot\AttemptedReadUnexistingSecret;
 use App\Domain\ReadSlot\ReadSlot;
 use App\Domain\ReadSlot\SecretWasRead;
 use App\Domain\ReadSlot\SecretWasWrittenInReadSlot;
@@ -49,5 +50,21 @@ class ReadSlotTest extends TestCase
 		$this->assertCount(2, $events);
 		$this->assertInstanceOf(SecretWasWrittenInReadSlot::class, $events[0]);
 		$this->assertInstanceOf(SecretWasRead::class, $events[1]);
+	}
+
+	/**
+	 * @test
+	 */
+	public function cannot_read_anything_if_no_secret_exists()
+	{
+		$read = new ReadSlot(
+			Uuid::uuid4()->toString(),
+			'sesamo1234'
+		);
+
+		$this->assertNull($read->getSecret('wrong password'));
+
+		$events = $read->getEvents();
+		$this->assertInstanceOf(AttemptedReadUnexistingSecret::class, $events[0]);
 	}
 }
