@@ -3,6 +3,8 @@
 namespace App\Tests\src\Infrastructure;
 
 use App\Application\CreatePairSlotsCommand;
+use App\Domain\ReadSlot\ReadSlot;
+use App\Domain\WriteSlot\WriteSlot;
 use App\Infrastructure\SlotsManagerRedis;
 use PHPUnit\Framework\TestCase;
 use Predis\Client;
@@ -20,7 +22,7 @@ class SlotsManagerRedisTest extends TestCase
 	private $readuid;
 
 	/** @var String */	
-	private $writeuidl;
+	private $writeuid;
 
 	public function setUp()
 	{
@@ -39,32 +41,35 @@ class SlotsManagerRedisTest extends TestCase
 	 * @test
 	 */
 	public function can_create_read_and_write()
-	{		
-		$this->manager->createPairSlots($this->writeuid, $this->readuid, 'user-password');
+	{
+		$read = new ReadSlot($this->readuid, 'sesamo1234');
+		$write = new WriteSlot($this->writeuid, $this->readuid);
 
-		$this->assertSame(['password' => 'user-password'], $this->redis->hgetAll($this->readuid));
-		$this->assertSame(['read_slot' => $this->readuid], $this->redis->hgetAll($this->writeuid));
-	}	
+		$this->manager->createPairSlots($write, $read);
+
+		$readslot = $this->manager->fetchSlot($this->readuid);
+		$writeslot = $this->manager->fetchSlot($this->writeuid);
+
+		$this->assertInstanceOf(ReadSlot::class, $readslot);
+		$this->assertInstanceOf(WriteSlot::class, $writeslot);
+	}
 
 	/**
 	 * @test
 	 */
-	public function can_write_secret()
+	public function write_slot_is_of_one_use()
 	{
-		$this->manager->createPairSlots($this->writeuid, $this->readuid, 'user-password');
-		$this->manager->writeSecret($this->writeuid, "this text should be secret");
+		$read = new ReadSlot($this->readuid, 'sesamo1234');
+		$write = new WriteSlot($this->writeuid, $this->readuid);
+		$this->manager->createPairSlots($write, $read);
 
-		$this->assertSame(
-			0,
-			$this->redis->exists($this->writeuid),
-			'The write slot has dissapeared'
-		);
+		$writeSlot = $this->manager
+			->fetchSlot($this->writeuid)
+			->setSecret('this is a secret');
 
-		$this->assertSame(
-			['secret' => "this text should be secret"],
-			$this->redis->hgetAll($this->readuid),
-			'The read slot only contain the secret (encoded), and the pasword is also deleted'
-		);
+		$this->manager->persistSecret($writeSlot);
+
+		$this->assertNull($this->manager->fetchSlot($this->writeuid), 'write slot dissapear once that is written');
 	}
 
 	/**

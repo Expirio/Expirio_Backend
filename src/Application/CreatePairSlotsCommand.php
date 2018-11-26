@@ -16,25 +16,18 @@ class CreatePairSlotsCommand
 		$this->readPassword = $readPassword;
 	}
 
-	/**
-	 * @return mixed
-	 */
 	public function getWriteUid()
 	{
 		return $this->writeUid;
 	}
 
-	/**
-	 * @return mixed
-	 */
+
 	public function getReadUid()
 	{
 		return $this->readUid;
 	}
 
-	/**
-	 * @return mixed
-	 */
+
 	public function getReadPassword()
 	{
 		return $this->readPassword;

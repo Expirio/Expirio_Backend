@@ -16,6 +16,21 @@ class ReadSlot
 		$this->password = $password;
 	}
 
+	public function getEvents()
+	{
+		return $this->events;
+	}
+
+	public function getGuid(): String
+	{
+		return $this->guid;
+	}
+
+	public function getPassword(): String
+	{
+		return $this->password;
+	}
+
 	public function getSecret(String $clearPassword)
 	{
 		if (null == $this->secret) {
@@ -44,10 +59,7 @@ class ReadSlot
 		return $this;
 	}
 
-	public function getEvents()
-	{
-		return $this->events;
-	}
+
 
 	private function encrypt($clearSecret, $password) {
 		return openssl_encrypt($clearSecret,"AES-128-ECB",$password);
