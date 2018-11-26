@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Application;
+namespace App\Application\Service;
 
 class CreatePairSlotsCommand
 {
