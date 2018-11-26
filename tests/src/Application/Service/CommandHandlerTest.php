@@ -58,6 +58,18 @@ class CommandHandlerTest extends TestCase
 		$this->assertFalse($result, 'a secret cannot be written in a write read slot');
 	}
 
+	public function testWhenSlotDoesntExist()
+	{
+		$command = new WriteSecretCommand('writeuid', 'this is my secret');
+
+		$stubManager = $this->createConfiguredMock(SlotsManagerRedis::class, [
+			'fetchSlot' => null
+		]);
+
+		$result = (new CommandHandler($stubManager))->handle($command);
+		$this->assertFalse($result, 'a secret cannot be written in a write read slot');
+	}
+
 	/**
 	 *
 	 * Read secret
