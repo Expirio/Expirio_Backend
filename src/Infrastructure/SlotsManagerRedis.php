@@ -15,21 +15,6 @@ class SlotsManagerRedis
 		$this->redis = $redis;
 	}
 
-	public function createPairSlots(WriteSlot $write, ReadSlot $read)
-	{
-		// create write slot
-		$this->redis->hmset(
-			$write->getGuid(),
-			['read_slot' => $read->getGuid()]
-		);
-
-		// create read slot
-		$this->redis->hmset(
-			$read->getGuid(),
-			['password' => $read->getPassword()]
-		);
-	}
-
 	public function persistSecret($writeSlot)
 	{
 		$this->deleteSlot($writeSlot);
@@ -37,6 +22,7 @@ class SlotsManagerRedis
 		$readSlot = $this->fetchSlot($writeSlot->getReadUi());
 		$readSlot->setSecret($writeSlot->getSecret());
 	}
+
 
 	public function deleteSlot($slot)
 	{
@@ -56,5 +42,22 @@ class SlotsManagerRedis
 		}
 
 		return null;
+	}
+
+	public function persistSlot($slot)
+	{
+		if ($slot instanceof ReadSlot) {
+			$this->redis->hmset(
+				$slot->getGuid(),
+				['password' => $slot->getPassword()]
+			);
+		}
+
+		if ($slot instanceof WriteSlot) {
+			$this->redis->hmset(
+				$slot->getGuid(),
+				['read_slot' => $slot->getReadUi()]
+			);
+		}
 	}
 }

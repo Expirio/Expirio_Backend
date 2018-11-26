@@ -28,7 +28,8 @@ class CommandHandler
 		$read = new ReadSlot($command->getReadUid(), $command->getReadPassword());
 		$write = new WriteSlot($command->getWriteUid(), $command->getReadUid());
 
-		$this->redisManager->createPairSlots($write, $read);
+		$this->redisManager->persistSlot($write);
+		$this->redisManager->persistSlot($read);
 	}
 
 	private function handleWriteSecretCommand(WriteSecretCommand $command)
@@ -43,5 +44,19 @@ class CommandHandler
 		}
 
 		return false;
+	}
+
+	private function handleReadSecretCommand(ReadSecretCommand $command)
+	{
+		$readSlot = $this->redisManager->fetchSlot($command->getReadUid());
+
+		if ($readSlot) {
+			$secret = $readSlot->getSecret($command->getPassword());
+			if ($secret) {
+				return $secret;
+			}
+		}
+
+		return null;
 	}
 }

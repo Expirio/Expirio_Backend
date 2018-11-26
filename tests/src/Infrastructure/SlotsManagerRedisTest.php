@@ -45,7 +45,8 @@ class SlotsManagerRedisTest extends TestCase
 		$read = new ReadSlot($this->readuid, 'sesamo1234');
 		$write = new WriteSlot($this->writeuid, $this->readuid);
 
-		$this->manager->createPairSlots($write, $read);
+		$this->manager->persistSlot($write);
+		$this->manager->persistSlot($read);
 
 		$readslot = $this->manager->fetchSlot($this->readuid);
 		$writeslot = $this->manager->fetchSlot($this->writeuid);
@@ -61,7 +62,28 @@ class SlotsManagerRedisTest extends TestCase
 	{
 		$read = new ReadSlot($this->readuid, 'sesamo1234');
 		$write = new WriteSlot($this->writeuid, $this->readuid);
-		$this->manager->createPairSlots($write, $read);
+		$this->manager->persistSlot($write);
+		$this->manager->persistSlot($read);
+
+		$writeSlot = $this->manager
+			->fetchSlot($this->writeuid)
+			->setSecret('this is a secret');
+
+		$this->manager->persistSlot($writeSlot);
+
+		$write = $this->manager->fetchSlot($this->writeuid);
+		$this->assertNull($write, 'write slot dissapear once that is written');
+	}
+
+	/**
+	 * @test
+	 */
+	public function on_write_read_is_updated_with_password()
+	{
+		$read = new ReadSlot($this->readuid, 'sesamo1234');
+		$write = new WriteSlot($this->writeuid, $this->readuid);
+		$this->manager->persistSlot($write);
+		$this->manager->persistSlot($read);
 
 		$writeSlot = $this->manager
 			->fetchSlot($this->writeuid)
@@ -69,7 +91,8 @@ class SlotsManagerRedisTest extends TestCase
 
 		$this->manager->persistSecret($writeSlot);
 
-		$this->assertNull($this->manager->fetchSlot($this->writeuid), 'write slot dissapear once that is written');
+		$read = $this->manager->fetchSlot($this->readuid);
+		$this->assertTrue(null !== $read->getPassword());
 	}
 
 	/**

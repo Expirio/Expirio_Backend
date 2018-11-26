@@ -4,14 +4,32 @@ namespace App\Tests\src\Application\Service;
 
 use App\Application\Service\CommandHandler;
 use App\Application\Service\CreatePairSlotsCommand;
+use App\Application\Service\ReadSecretCommand;
 use App\Application\Service\WriteSecretCommand;
 use App\Domain\ReadSlot\ReadSlot;
 use App\Domain\WriteSlot\WriteSlot;
 use App\Infrastructure\SlotsManagerRedis;
 use PHPUnit\Framework\TestCase;
+use Predis\Client;
 
 class CommandHandlerTest extends TestCase
 {
+	private $manager;
+	private $redis;
+	private $handler;
+
+	public function setUp()
+	{
+		$this->redis = new Client([
+			"host" => "localhost",
+			"port" => 6379
+		]);
+
+		$this->manager = new SlotsManagerRedis($this->redis);
+		$this->handler = (new CommandHandler($this->manager));
+	}
+
+
 	/**
 	 *
 	 * Create pair
@@ -21,12 +39,13 @@ class CommandHandlerTest extends TestCase
 	{
 		$command = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
 
-		$mockRedisManager = $this->createMock(SlotsManagerRedis::class);
-		$mockRedisManager
-			->expects($this->once())
-			->method('createPairSlots');
+		$this->handler->handle($command);
 
-		(new CommandHandler($mockRedisManager))->handle($command);
+		$write = $this->manager->fetchSlot('writeuid');
+		$read = $this->manager->fetchSlot('readuid');
+
+		$this->assertInstanceOf(WriteSlot::class, $write);
+		$this->assertInstanceOf(ReadSlot::class, $read);
 	}
 
 	/**
@@ -36,14 +55,17 @@ class CommandHandlerTest extends TestCase
 	 */
 	public function testWriteSecretCheckFirstlyTypeOfSlot()
 	{
+		$command = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
+		$this->handler->handle($command);
 		$command = new WriteSecretCommand('writeuid', 'this is my secret');
+		$this->handler->handle($command);
 
-		$stubManager = $this->createConfiguredMock(SlotsManagerRedis::class, [
-			'fetchSlot' => new WriteSlot('writeuid', 'readUid')
-		]);
+		$write = $this->manager->fetchSlot('writeuid');
+		$read = $this->manager->fetchSlot('readuid');
 
-		$result = (new CommandHandler($stubManager))->handle($command);
-		$this->assertTrue($result);
+		$this->assertNull($write);
+		$this->assertTrue($read->getPassword() !== 'sesame1234');
+		$this->assertInstanceOf(ReadSlot::class, $read);
 	}
 
 	public function testWriteSecretCheckFirstlyTypeOfSlotForWrongType()
@@ -75,4 +97,15 @@ class CommandHandlerTest extends TestCase
 	 * Read secret
 	 *
 	 */
+	public function testReadSecret()
+	{
+		$command = new ReadSecretCommand('readuid', 'sesame1234');
+
+		$stubManager = $this->createConfiguredMock(SlotsManagerRedis::class, [
+			'fetchSlot' => new ReadSlot('writeuid', 'readUid')
+		]);
+
+		$secret = (new CommandHandler($stubManager))->handle($command);
+
+	}
 }
