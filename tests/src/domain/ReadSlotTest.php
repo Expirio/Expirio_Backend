@@ -24,6 +24,19 @@ class ReadSlotTest extends TestCase
 		$this->readSlot = new ReadSlot('uid1', 'sesamo1234');
 	}
 
+	// setting the secret....
+
+	/**
+	 * @test
+	 */
+	public function password_is_hashed_when_secret_is_set()
+	{
+		$this->readSlot->setSecret('this is my secret');
+
+		$this->assertTrue($this->readSlot->getPassword() !== 'sesamo1234', 'password is hashed after setting the secret');
+		$this->assertTrue($this->readSlot->getSecret() !== 'this is my secret', 'secret is encoding after setting the secret');
+	}
+
 	/**
 	 * @test
 	 */
@@ -34,6 +47,8 @@ class ReadSlotTest extends TestCase
 		$events = $this->readSlot->getEvents();
 		$this->assertInstanceOf(SecretWasWrittenInReadSlot::class, $events[0]);
 	}
+
+	// decrypting the secret....
 
 	/**
 	 * @test

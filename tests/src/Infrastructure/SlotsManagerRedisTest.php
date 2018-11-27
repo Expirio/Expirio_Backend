@@ -98,7 +98,7 @@ class SlotsManagerRedisTest extends TestCase
 
 		$read = $this->manager->fetchSlot($this->readuid);
 		$this->assertTrue($read->getPassword() !== 'sesamo1234', 'Now there is a secret, so the password shouldnt be clear');
-		$this->assertTrue($read->getEncryptedSecret() !== 'this is a secret', 'The secret must be encrypted');
+		$this->assertTrue($read->getSecret() !== 'this is a secret', 'The secret must be encrypted');
 	}
 
 	/**

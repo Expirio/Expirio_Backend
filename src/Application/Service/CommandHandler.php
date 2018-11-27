@@ -51,7 +51,7 @@ class CommandHandler
 		$readSlot = $this->redisManager->fetchSlot($command->getReadUid());
 
 		if ($readSlot) {
-			$secret = $readSlot->getSecret($command->getPassword());
+			$secret = $readSlot->revealSecret($command->getPassword());
 			if ($secret) {
 				return $secret;
 			}

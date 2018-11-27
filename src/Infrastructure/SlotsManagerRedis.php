@@ -56,7 +56,7 @@ class SlotsManagerRedis
 
 			$events = $slot->getEvents();
 			if (count($events) > 0 && $events[0] instanceof SecretWasWrittenInReadSlot) {
-				$data['secret'] = $slot->getEncryptedSecret();
+				$data['secret'] = $slot->getSecret();
 			}
 
 			$this->redis->hmset($slot->getGuid(), $data);
