@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 use Predis\Client;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @group infrastructure
+ */
 class SlotsManagerRedisTest extends TestCase
 {
 	/** @var Client */
@@ -58,7 +61,7 @@ class SlotsManagerRedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function write_slot_is_of_one_use()
+	public function when_write_secret_then_write_slot_is_deleted()
 	{
 		$read = new ReadSlot($this->readuid, 'sesamo1234');
 		$write = new WriteSlot($this->writeuid, $this->readuid);
@@ -78,21 +81,24 @@ class SlotsManagerRedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function on_write_read_is_updated_with_password()
+	public function when_write_secret_then_read_is_updated()
 	{
 		$read = new ReadSlot($this->readuid, 'sesamo1234');
 		$write = new WriteSlot($this->writeuid, $this->readuid);
 		$this->manager->persistSlot($write);
 		$this->manager->persistSlot($read);
 
+		$read = $this->manager->fetchSlot($this->readuid);
+		$this->assertEquals('sesamo1234', $read->getPassword(), 'There is no secret yet, so the password is in clear text for now, there is no secret');
+
 		$writeSlot = $this->manager
 			->fetchSlot($this->writeuid)
 			->setSecret('this is a secret');
-
-		$this->manager->persistSecret($writeSlot);
+		$this->manager->persistSlot($writeSlot);
 
 		$read = $this->manager->fetchSlot($this->readuid);
-		$this->assertTrue(null !== $read->getPassword());
+		$this->assertTrue($read->getPassword() !== 'sesamo1234', 'Now there is a secret, so the password shouldnt be clear');
+		$this->assertTrue($read->getEncryptedSecret() !== 'this is a secret', 'The secret must be encrypted');
 	}
 
 	/**

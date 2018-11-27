@@ -3,6 +3,7 @@
 namespace App\Infrastructure;
 
 use App\Domain\ReadSlot\ReadSlot;
+use App\Domain\ReadSlot\SecretWasWrittenInReadSlot;
 use App\Domain\WriteSlot\WriteSlot;
 use Predis\Client;
 
@@ -13,14 +14,6 @@ class SlotsManagerRedis
 	public function __construct(Client $redis)
 	{
 		$this->redis = $redis;
-	}
-
-	public function persistSecret($writeSlot)
-	{
-		$this->deleteSlot($writeSlot);
-
-		$readSlot = $this->fetchSlot($writeSlot->getReadUi());
-		$readSlot->setSecret($writeSlot->getSecret());
 	}
 
 
@@ -34,7 +27,8 @@ class SlotsManagerRedis
 		$slotRedis = $this->redis->hgetall($guid);
 
 		if (isset($slotRedis['password'])) {
-			return new ReadSlot($guid, $slotRedis['password']);
+			$secret = $slotRedis['secret'] ?? null;
+			return new ReadSlot($guid, $slotRedis['password'], $secret);
 		}
 
 		if (isset($slotRedis['read_slot'])) {
@@ -46,18 +40,26 @@ class SlotsManagerRedis
 
 	public function persistSlot($slot)
 	{
-		if ($slot instanceof ReadSlot) {
-			$this->redis->hmset(
-				$slot->getGuid(),
-				['password' => $slot->getPassword()]
-			);
+		if ($slot instanceof WriteSlot) {
+			if ($slot->getSecret() !== null) {
+				$clearSecret = $slot->getSecret();
+				$this->deleteSlot($slot);
+				$readSlot = $this->fetchSlot($slot->getReadUi())->setSecret($clearSecret);
+				$this->persistSlot($readSlot);
+			} else {
+				$this->redis->hmset($slot->getGuid(), ['read_slot' => $slot->getReadUi()]);
+			}
 		}
 
-		if ($slot instanceof WriteSlot) {
-			$this->redis->hmset(
-				$slot->getGuid(),
-				['read_slot' => $slot->getReadUi()]
-			);
+		if ($slot instanceof ReadSlot) {
+			$data = ['password' => $slot->getPassword()];
+
+			$events = $slot->getEvents();
+			if (count($events) > 0 && $events[0] instanceof SecretWasWrittenInReadSlot) {
+				$data['secret'] = $slot->getEncryptedSecret();
+			}
+
+			$this->redis->hmset($slot->getGuid(), $data);
 		}
 	}
 }

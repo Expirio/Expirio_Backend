@@ -7,6 +7,9 @@ use App\Domain\WriteSlot\WriteSlotWasWritten;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @group domain
+ */
 class WriteSlotTest extends TestCase
 {
 	/**

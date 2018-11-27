@@ -12,6 +12,9 @@ use App\Infrastructure\SlotsManagerRedis;
 use PHPUnit\Framework\TestCase;
 use Predis\Client;
 
+/**
+ * @group application
+ */
 class CommandHandlerTest extends TestCase
 {
 	private $manager;

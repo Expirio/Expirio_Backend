@@ -39,7 +39,7 @@ class CommandHandler
 		if ($writeSlot && $writeSlot instanceof WriteSlot) {
 			$writeSlot->setSecret($command->getSecret());
 
-			$this->redisManager->persistSecret($writeSlot);
+			$this->redisManager->persistSlot($writeSlot);
 			return true;
 		}
 

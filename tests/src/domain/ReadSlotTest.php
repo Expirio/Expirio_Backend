@@ -11,6 +11,9 @@ use App\Domain\ReadSlot\UsedWrongPasswordWhenReading;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @group domain
+ */
 class ReadSlotTest extends TestCase
 {
 	/**

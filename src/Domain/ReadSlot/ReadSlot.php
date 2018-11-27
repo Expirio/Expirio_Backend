@@ -10,10 +10,11 @@ class ReadSlot
 
 	private $events = [];
 
-	public function __construct($guid, $password, $expiration = null)
+	public function __construct($guid, $password, $secret = null, $expiration = null)
 	{
 		$this->guid = $guid;
 		$this->password = $password;
+		$this->secret = $secret;
 	}
 
 	public function getEvents()
@@ -29,6 +30,11 @@ class ReadSlot
 	public function getPassword(): String
 	{
 		return $this->password;
+	}
+
+	public function getEncryptedSecret(): String
+	{
+		return $this->secret;
 	}
 
 	public function getSecret(String $clearPassword)
