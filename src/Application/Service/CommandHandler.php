@@ -23,13 +23,15 @@ class CommandHandler
 		return $this->$handleMethod($command);
 	}
 
-	private function handleCreatePairSlotsCommand(CreatePairSlotsCommand $command)
+	private function handleCreatePairSlotsCommand(CreatePairSlotsCommand $command): PairSlot
 	{
 		$read = new ReadSlot($command->getReadUid(), $command->getReadPassword());
 		$write = new WriteSlot($command->getWriteUid(), $command->getReadUid());
 
 		$this->redisManager->persistSlot($write);
 		$this->redisManager->persistSlot($read);
+
+		return new PairSlot($read, $write);
 	}
 
 	private function handleWriteSecretCommand(WriteSecretCommand $command)

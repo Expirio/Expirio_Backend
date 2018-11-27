@@ -44,6 +44,17 @@ class ReadSlotTest extends TestCase
 		$this->assertInstanceOf(SecretWasWrittenInReadSlot::class, $events[0]);
 	}
 
+	/**
+	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage Secret cannot be set more than once. This is a violation
+	 */
+	public function secret_cannot_be_set_more_than_once()
+	{
+		$this->readSlot->setSecret('this is my secret');
+		$this->readSlot->setSecret('this is my secret again');
+	}
+
 	// decrypting the secret....
 
 	/**

@@ -60,6 +60,10 @@ class ReadSlot
 
 	public function setSecret(String $secret)
 	{
+		if (!is_null($this->secret)) {
+			throw new Exception('Secret cannot be set more than once. This is a violation');
+		}
+
 		$this->secret = $this->encrypt($secret, $this->password);
 		$this->password = $this->hash($this->password);
 

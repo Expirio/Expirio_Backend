@@ -4,6 +4,7 @@ namespace App\Tests\src\Application\Service;
 
 use App\Application\Service\CommandHandler;
 use App\Application\Service\CreatePairSlotsCommand;
+use App\Application\Service\PairSlot;
 use App\Application\Service\ReadSecretCommand;
 use App\Application\Service\WriteSecretCommand;
 use App\Domain\ReadSlot\ReadSlot;
@@ -32,36 +33,28 @@ class CommandHandlerTest extends TestCase
 		$this->handler = (new CommandHandler($this->manager));
 	}
 
-
 	/**
-	 *
-	 * Create pair
-	 *
+	 * @test
 	 */
-	public function testCreatePair()
+	public function create_pair()
 	{
 		$command = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
 
-		$this->handler->handle($command);
+		$pair = $this->handler->handle($command);
 
-		$write = $this->manager->fetchSlot('writeuid');
-		$read = $this->manager->fetchSlot('readuid');
-
-		$this->assertInstanceOf(WriteSlot::class, $write);
-		$this->assertInstanceOf(ReadSlot::class, $read);
+		$this->assertInstanceOf(PairSlot::class, $pair);
 	}
 
 	/**
-	 *
-	 * write secret
-	 *
+	 * @test
 	 */
-	public function testWriteSecretCheckFirstlyTypeOfSlot()
+	public function can_write_secret()
 	{
-		$command = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
-		$this->handler->handle($command);
-		$command = new WriteSecretCommand('writeuid', 'this is my secret');
-		$this->handler->handle($command);
+		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
+		$setSecretCommand = new WriteSecretCommand('writeuid', 'this is my secret');
+
+		$this->handler->handle($createPairCommand);
+		$this->handler->handle($setSecretCommand);
 
 		$write = $this->manager->fetchSlot('writeuid');
 		$read = $this->manager->fetchSlot('readuid');
