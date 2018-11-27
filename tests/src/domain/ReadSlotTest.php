@@ -29,7 +29,7 @@ class ReadSlotTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function password_is_hashed_when_secret_is_set()
+	public function when_secret_is_set_then_data_is_protected()
 	{
 		$this->readSlot->setSecret('this is my secret');
 
