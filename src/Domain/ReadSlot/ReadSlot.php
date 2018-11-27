@@ -2,6 +2,8 @@
 namespace App\Domain\ReadSlot;
 
 
+use Exception;
+
 class ReadSlot
 {
 	private $guid;
@@ -32,27 +34,28 @@ class ReadSlot
 		return $this->password;
 	}
 
-	public function getEncryptedSecret(): String
+	public function getSecret(): String
 	{
 		return $this->secret;
 	}
 
-	public function getSecret(String $clearPassword)
+	public function revealSecret(String $clearPassword): ?String
 	{
 		if (null == $this->secret) {
-			$this->events[] = new AttemptedReadUnexistingSecret($this->guid);
+			return null;
+		}
+
+		if (sha1($clearPassword) !== $this->password) {
+			$this->events[] = new UsedWrongPasswordWhenReading($this->guid);
+
+			if($this->getAmountOfAttempts() >=3) {
+				throw new Exception('Maximum attempts reached with wrong password');
+			}
 
 			return null;
 		}
 
-		if (sha1($clearPassword) === $this->password) {
-			$this->events[] = new SecretWasRead($this->guid);
-
-			return $this->decrypt($this->secret, $clearPassword);
-		}
-
-		$this->events[] = new UsedWrongPasswordWhenReading($this->guid);
-		return null;
+		return $this->decrypt($this->secret, $clearPassword);
 	}
 
 	public function setSecret(String $secret)
@@ -78,5 +81,19 @@ class ReadSlot
 	private function hash(string $text)
 	{
 		return sha1($text);
+	}
+
+	private function getAmountOfAttempts(): Int
+	{
+		$attemps = 0;
+		$events = $this->getEvents();
+
+		foreach($events as $event) {
+			if($event instanceof UsedWrongPasswordWhenReading) {
+				$attemps++;
+			}
+		}
+
+		return $attemps;
 	}
 }

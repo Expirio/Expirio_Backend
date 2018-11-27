@@ -16,22 +16,23 @@ use Ramsey\Uuid\Uuid;
  */
 class ReadSlotTest extends TestCase
 {
+	/** @var ReadSlot */
+	private $readSlot;
+
+	public function setUp()
+	{
+		$this->readSlot = new ReadSlot('uid1', 'sesamo1234');
+	}
+
 	/**
 	 * @test
 	 */
-	public function return_null_if_wrong_password()
+	public function event_when_secret_is_set()
 	{
-		$read = (new ReadSlot(
-			Uuid::uuid4()->toString(),
-			'sesamo1234'
-		))->setSecret('this is my secret');
+		$this->readSlot->setSecret('this is my secret');
 
-		$this->assertNull($read->getSecret('wrong password'));
-
-		$events = $read->getEvents();
-		$this->assertCount(2, $events);
+		$events = $this->readSlot->getEvents();
 		$this->assertInstanceOf(SecretWasWrittenInReadSlot::class, $events[0]);
-		$this->assertInstanceOf(UsedWrongPasswordWhenReading::class, $events[1]);
 	}
 
 	/**
@@ -39,35 +40,52 @@ class ReadSlotTest extends TestCase
 	 */
 	public function can_decrypt_secret_with_proper_password()
 	{
-		$read = (new ReadSlot(
-			Uuid::uuid4()->toString(),
-			'sesamo1234'
-		))->setSecret('this is my secret');
+		$decryptedSecret = $this->readSlot
+			->setSecret('this is my secret')
+			->revealSecret('sesamo1234');
 
-		$this->assertEquals(
-			'this is my secret',
-			$read->getSecret('sesamo1234')
-		);
-
-		$events = $read->getEvents();
-		$this->assertCount(2, $events);
-		$this->assertInstanceOf(SecretWasWrittenInReadSlot::class, $events[0]);
-		$this->assertInstanceOf(SecretWasRead::class, $events[1]);
+		$this->assertEquals('this is my secret', $decryptedSecret);
 	}
 
 	/**
 	 * @test
 	 */
-	public function cannot_read_anything_if_no_secret_exists()
+	public function events_when_wrong_password_is_used()
 	{
-		$read = new ReadSlot(
-			Uuid::uuid4()->toString(),
-			'sesamo1234'
-		);
+		$this->readSlot->setSecret('this is my secret');
 
-		$this->assertNull($read->getSecret('wrong password'));
+		$this->readSlot->revealSecret('wrong password');
+		$this->readSlot->revealSecret('wrong password again');
 
-		$events = $read->getEvents();
-		$this->assertInstanceOf(AttemptedReadUnexistingSecret::class, $events[0]);
+
+		$events = $this->readSlot->getEvents();
+		$this->assertInstanceOf(UsedWrongPasswordWhenReading::class, $events[1]);
+		$this->assertInstanceOf(UsedWrongPasswordWhenReading::class, $events[2]);
+	}
+
+	/**
+	 * @test
+	 */
+	public function secret_is_null_if_wrong_password_is_used()
+	{
+		$decrypted = $this->readSlot
+			->setSecret('this is my secret')
+			->revealSecret('wrong passwod');
+
+		$this->assertNull($decrypted);
+	}
+
+	/**
+	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage  Maximum attempts reached with wrong password
+	 */
+	public function limit_attemps_to_decrypt_work_as_expected()
+	{
+		$this->readSlot->setSecret('this is my secret');
+
+		$this->readSlot->revealSecret('wrong passwod 1');
+		$this->readSlot->revealSecret('wrong passwod 2');
+		$this->readSlot->revealSecret('wrong passwod 3');
 	}
 }
