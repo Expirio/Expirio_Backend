@@ -2,14 +2,10 @@
 
 namespace App\Tests\src\domain;
 
-
-use App\Domain\ReadSlot\AttemptedReadUnexistingSecret;
 use App\Domain\ReadSlot\ReadSlot;
-use App\Domain\ReadSlot\SecretWasRead;
 use App\Domain\ReadSlot\SecretWasWrittenInReadSlot;
 use App\Domain\ReadSlot\UsedWrongPasswordWhenReading;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
 
 /**
  * @group domain

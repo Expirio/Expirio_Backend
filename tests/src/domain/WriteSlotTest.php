@@ -5,27 +5,28 @@ namespace App\Tests\src\domain;
 use App\Domain\WriteSlot\WriteSlot;
 use App\Domain\WriteSlot\WriteSlotWasWritten;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
 
 /**
  * @group domain
  */
 class WriteSlotTest extends TestCase
 {
+	/** @var WriteSlot */
+	private $writeSlot;
+
+	public function setUp()
+	{
+		$this->writeSlot = new WriteSlot('uid1', 'uid2');
+	}
+
 	/**
 	 * @test
 	 */
-	public function can_write_secret()
+	public function event_is_created_when_secret_is_set()
 	{
+		$this->writeSlot->setSecret('my secret text');
 
-		$write = new WriteSlot(
-			Uuid::uuid4()->toString(),
-			Uuid::uuid4()->toString()
-		);
-
-		$write->setSecret('my secret text');
-
-		$events = $write->getEvents();
+		$events = $this->writeSlot->getEvents();
 		$this->assertInstanceOf(WriteSlotWasWritten::class, $events[0]);
 	}
 }
