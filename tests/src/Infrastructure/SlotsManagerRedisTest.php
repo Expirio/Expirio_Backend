@@ -114,7 +114,7 @@ class SlotsManagerRedisTest extends TestCase
 		$this->assertEquals($this->readuid, $readslot->getGuid());
 		$this->assertTrue('this is a secret' !== $readslot->getSecret());
 		$this->assertTrue('sesamo1234' !== $readslot->getPassword());
-		$this->assertTrue('this is a secret' !== $readslot->revealSecret('sesame1234'));
+		$this->assertTrue('this is a secret' == $readslot->revealSecret('sesamo1234'));
 	}
 
 	public function tearDown()
