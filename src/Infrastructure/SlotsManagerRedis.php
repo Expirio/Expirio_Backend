@@ -28,7 +28,7 @@ class SlotsManagerRedis
 
 		if (isset($persistenceData['password'])) {
 			$secret = !empty($persistenceData['secret']) ? $persistenceData['secret'] :  null;
-			return new ReadSlot($guid, $persistenceData['password'], $secret);
+			return new ReadSlot($guid, $persistenceData['password'], $secret, $persistenceData['attempts']);
 		}
 
 		if (isset($persistenceData['read_slot'])) {
@@ -51,7 +51,8 @@ class SlotsManagerRedis
 		if ($slot instanceof ReadSlot) {
 			$data = [
 				'password' => $slot->getPassword(),
-				'secret' => $slot->getSecret()
+				'secret' => $slot->getSecret(),
+				'attempts' => $slot->getAmountOfAttempts()
 			];
 
 			$this->redis->hmset($slot->getGuid(), $data);

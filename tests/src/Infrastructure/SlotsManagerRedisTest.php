@@ -63,7 +63,7 @@ class SlotsManagerRedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function can_persist_read_slot()
+	public function can_persist_basic_read_slot()
 	{
 		$read = new ReadSlot($this->readuid, 'sesamo1234');
 
@@ -75,6 +75,20 @@ class SlotsManagerRedisTest extends TestCase
 		$this->assertNull($readslot->getSecret());
 		$this->assertEquals($this->readuid, $readslot->getGuid());
 		$this->assertEquals('sesamo1234', $readslot->getPassword());
+	}
+
+	/**
+	 * @test
+	 */
+	public function can_persist_read_slot_with_some_attempts()
+	{
+		$read = new ReadSlot($this->readuid, 'sesamo1234', 'any secret', 4);
+
+		$this->manager->persistSlot($read);
+		$readslot = $this->manager->fetchSlot($this->readuid);
+
+		$this->assertInstanceOf(ReadSlot::class, $readslot);
+		$this->assertEquals(4, $readslot->getAmountOfAttempts());
 	}
 
 

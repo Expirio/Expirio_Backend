@@ -57,6 +57,7 @@ class CommandHandler
 		$readSlot = $this->redisManager->fetchSlot($command->getReadUid());
 
 		if ($readSlot && $readSlot instanceof ReadSlot) {
+
 			$secret = $readSlot->revealSecret($command->getPassword());
 
 			if ($secret) {
@@ -64,9 +65,10 @@ class CommandHandler
 			}
 
 			if($readSlot->getAmountOfAttempts() >= 3) {
-
+				throw new Exception('Reading slot: Max amount of attempts reached');
 			} elseif ($readSlot->getAmountOfAttempts() >= 0) {
-				throw new Exception('Invalid password');
+				$this->redisManager->persistSlot($readSlot);
+				throw new Exception('Reading slot: Invalid password');
 			}
 
 		}
