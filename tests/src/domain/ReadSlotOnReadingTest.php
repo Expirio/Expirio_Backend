@@ -46,13 +46,13 @@ class ReadSlotOnReadingTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function limit_attemps_to_decrypt_work_as_expected()
+	public function track_attempts_to_decrypt()
 	{
-		$readSlot = new ReadSlot('uid1', 'sesamo1234', 'encrypted text here',  2);
+		$this->readSlot->setSecret('this is my secret');
 
-		$readSlot->revealSecret('wrong passwod 3');
-		$this->assertEquals(3, $readSlot->getAmountOfAttempts());
-		$readSlot->revealSecret('wrong passwod 4');
-		$this->assertEquals(4, $readSlot->getAmountOfAttempts());
+		$this->readSlot->revealSecret('wrong passwod');
+		$this->readSlot->revealSecret('again wrong password');
+
+		$this->assertEquals(2, $this->readSlot->getAmountOfAttempts());
 	}
 }
