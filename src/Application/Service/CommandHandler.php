@@ -56,9 +56,10 @@ class CommandHandler
 		if ($readSlot && $readSlot instanceof ReadSlot) {
 			$secret = $readSlot->revealSecret($command->getPassword());
 			if ($secret) {
-				$this->redisManager->deleteSlot($readSlot);
-				return $secret;
+				$this->redisManager->deleteSlot($readSlot);	
 			}
+			
+			return $secret;
 		}
 
 		return null;
