@@ -43,12 +43,4 @@ class CommandHandlerOnCreatePairTest extends TestCase
 
 		$this->assertInstanceOf(PairSlot::class, $pair);
 	}
-
-	private function givenAPair()
-	{
-		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
-		$setSecretCommand = new WriteSecretCommand('writeuid', 'this is my secret');
-		$this->handler->handle($createPairCommand);
-		$this->handler->handle($setSecretCommand);
-	}
 }

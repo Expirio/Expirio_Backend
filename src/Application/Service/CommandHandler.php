@@ -59,6 +59,6 @@ class CommandHandler
 			return $readSlot->revealSecret($command->getPassword());
 		}
 
-		throw new Exception('The read slot doesnt exist or the password is invalid');
+		throw new Exception('The read-slot doesnt exist or the password to read is invalid');
 	}
 }

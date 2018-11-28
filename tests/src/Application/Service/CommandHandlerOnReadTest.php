@@ -48,11 +48,11 @@ class CommandHandlerOnReadTest extends TestCase
 	/**
 	 * @test
 	 * @expectedException \Exception
-	 * @expectedExceptionMessage The read slot doesnt exist or the password is invalid
+	 * @expectedExceptionMessage The read-slot doesnt exist or the password to read is invalid
 	 */
-	public function cannot_read_secret_if_slot_doesnt_exist()
+	public function cannot_read_if_readid_is_incorrect()
 	{
-		$readQuery = new ReadSecretQuery('non_existing_uid', 'sesame1234');
+		$readQuery = new ReadSecretQuery('WRONG_READ_ID', 'sesame1234');
 
 		$this->handler->handle($readQuery);
 	}
