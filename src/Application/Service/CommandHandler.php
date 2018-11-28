@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 namespace App\Application\Service;
 
@@ -37,24 +37,26 @@ class CommandHandler
 	private function handleWriteSecretCommand(WriteSecretCommand $command)
 	{
 		$writeSlot = $this->redisManager->fetchSlot($command->getWriteUid());
-
+		
 		if ($writeSlot && $writeSlot instanceof WriteSlot) {
-			$writeSlot->setSecret($command->getSecret());
-
-			$this->redisManager->persistSlot($writeSlot);
-			return true;
+			$readlot = $this->redisManager->fetchSlot($command->getReadUid());
+			
+			if ($readSlot && $readSlot instanceof ReadSlot) {
+			    $readsSlot->setSecret($command->getSecret());
+                            $this->redisManager->persistSlot($readSlot);
+			    $this->redisManager->deleteSlot($writeSlot);
+			}
 		}
-
-		return false;
 	}
 
 	private function handleReadSecretCommand(ReadSecretCommand $command)
 	{
 		$readSlot = $this->redisManager->fetchSlot($command->getReadUid());
 
-		if ($readSlot) {
+		if ($readSlot && $readSlot instanceof ReadSlot) {
 			$secret = $readSlot->revealSecret($command->getPassword());
 			if ($secret) {
+				$this->redisManager->deleteSlot($readSlot);
 				return $secret;
 			}
 		}
