@@ -31,7 +31,7 @@ class SlotsManagerRedis
 			if (!empty($persistenceData['secret'])) {
 				$secret = $persistenceData['secret'];
 			}
-			
+
 			return new ReadSlot($guid, $persistenceData['password'], $secret);
 		}
 

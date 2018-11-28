@@ -40,6 +40,8 @@ class SlotsManagerRedisTest extends TestCase
 		$this->manager = new SlotsManagerRedis($this->redis);
 	}
 
+	// Write slot
+
 	/**
 	 * @test
 	 */
@@ -62,8 +64,7 @@ class SlotsManagerRedisTest extends TestCase
 	 */
 	public function can_write_and_read_a_write_slot_with_secret()
 	{
-		$write = new WriteSlot($this->writeuid, $this->readuid);
-		$write->setSecret('this is my secret');
+		$write = new WriteSlot($this->writeuid, $this->readuid, 'this is my secret');
 
 		$this->manager->persistSlot($write);
 
@@ -72,8 +73,9 @@ class SlotsManagerRedisTest extends TestCase
 		$this->assertEquals('this is my secret', $writeslot->getSecret());
 		$this->assertEquals($this->writeuid, $writeslot->getGuid());
 		$this->assertEquals($this->readuid, $writeslot->getReadUi());
-
 	}
+
+	// Read slot
 
 	/**
 	 * @test

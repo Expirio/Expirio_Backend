@@ -29,4 +29,15 @@ class WriteSlotTest extends TestCase
 		$events = $this->writeSlot->getEvents();
 		$this->assertInstanceOf(WriteSlotWasWritten::class, $events[0]);
 	}
+
+	/**
+	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage The secret was already set in the write slot and cannot be replaced
+	 */
+	public function secret_can_be_set_only_once()
+	{
+		$this->writeSlot->setSecret('my secret text');
+		$this->writeSlot->setSecret('my secret text');
+	}
 }
