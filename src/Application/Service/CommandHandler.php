@@ -47,7 +47,7 @@ class CommandHandler
 			    $this->redisManager->deleteSlot($writeSlot);
 			}
 		} else {
-			throw new Exception('The write-slot doesnt exist or is not a write-slot');
+			throw new Exception('Cannot write secret: The write-slot doesnt exist or is not a write-slot');
 		}
 	}
 
