@@ -70,6 +70,8 @@ class CommandHandlerOnReadTest extends TestCase
 		$this->handler->handle($readQuery);
 	}
 
+	// create a test that show how an exception is rised when attempts are bigger than three
+
 	private function givenAPair()
 	{
 		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');

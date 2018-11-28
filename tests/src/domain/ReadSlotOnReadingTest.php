@@ -33,24 +33,26 @@ class ReadSlotOnReadingTest extends TestCase
 
 	/**
 	 * @test
-	 * @expectedException \Exception
-	 * @expectedExceptionMessage  Invalid password
 	 */
-	public function exception_is_thrown_when_invalid_password()
+	public function null_returned_when_wrong_password()
 	{
-		$this->readSlot
+		$secret = $this->readSlot
 			->setSecret('this is my secret')
 			->revealSecret('wrong passwod');
+
+		$this->assertNull($secret);
 	}
 
 	/**
 	 * @test
-	 * @expectedException \Exception
-	 * @expectedExceptionMessage  Maximum attempts reached with wrong password
 	 */
 	public function limit_attemps_to_decrypt_work_as_expected()
 	{
-		$readSlot = new ReadSlot('uid1', 'sesamo1234', 'encrypted text here',  3);
-		$readSlot->revealSecret('wrong passwod 1');
+		$readSlot = new ReadSlot('uid1', 'sesamo1234', 'encrypted text here',  2);
+
+		$readSlot->revealSecret('wrong passwod 3');
+		$this->assertEquals(3, $readSlot->getAmountOfAttempts());
+		$readSlot->revealSecret('wrong passwod 4');
+		$this->assertEquals(4, $readSlot->getAmountOfAttempts());
 	}
 }

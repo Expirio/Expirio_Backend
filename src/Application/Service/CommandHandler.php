@@ -2,6 +2,7 @@
 namespace App\Application\Service;
 
 use App\Domain\ReadSlot\ReadSlot;
+use App\Domain\ReadSlot\WrongPasswordUsed;
 use App\Domain\WriteSlot\WriteSlot;
 use App\Infrastructure\SlotsManagerRedis;
 use Exception;
@@ -56,7 +57,18 @@ class CommandHandler
 		$readSlot = $this->redisManager->fetchSlot($command->getReadUid());
 
 		if ($readSlot && $readSlot instanceof ReadSlot) {
-			return $readSlot->revealSecret($command->getPassword());
+			$secret = $readSlot->revealSecret($command->getPassword());
+
+			if ($secret) {
+				return $secret;
+			}
+
+			if($readSlot->getAmountOfAttempts() >= 3) {
+
+			} elseif ($readSlot->getAmountOfAttempts() >= 0) {
+				throw new Exception('Invalid password');
+			}
+
 		}
 
 		throw new Exception('The read-slot doesnt exist or the password to read is invalid');

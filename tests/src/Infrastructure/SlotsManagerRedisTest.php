@@ -45,7 +45,7 @@ class SlotsManagerRedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function can_read_and_write_a_write_slot()
+	public function can_persist_write_slot()
 	{
 		$write = new WriteSlot($this->writeuid, $this->readuid);
 
@@ -63,7 +63,7 @@ class SlotsManagerRedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function can_write_and_read_a_read_slot()
+	public function can_persist_read_slot()
 	{
 		$read = new ReadSlot($this->readuid, 'sesamo1234');
 

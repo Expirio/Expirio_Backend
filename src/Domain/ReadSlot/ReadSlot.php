@@ -40,6 +40,11 @@ class ReadSlot
 		return $this->secret;
 	}
 
+	public function getAmountOfAttempts(): Int
+	{
+		return $this->amountFailedAttempts;
+	}
+
 	public function revealSecret(String $clearPassword): ?String
 	{
 		if (null == $this->secret) {
@@ -48,12 +53,8 @@ class ReadSlot
 
 		if (sha1($clearPassword) !== $this->password) {
 			$this->amountFailedAttempts++;
-
-			if($this->amountFailedAttempts >=3) {
-				throw new Exception('Maximum attempts reached with wrong password');
-			}
-
-			throw new Exception('Invalid password');
+			$this->events[] = new WrongPasswordUsed($this->guid);
+			return null;
 		}
 
 		return $this->decrypt($this->secret, $clearPassword);
@@ -74,7 +75,6 @@ class ReadSlot
 	}
 
 
-
 	private function encrypt($clearSecret, $password) {
 		return openssl_encrypt($clearSecret,"AES-128-ECB",$password);
 	}
@@ -86,19 +86,5 @@ class ReadSlot
 	private function hash(string $text)
 	{
 		return sha1($text);
-	}
-
-	private function getAmountOfAttempts(): Int
-	{
-		$attemps = 0;
-		$events = $this->getEvents();
-
-		foreach($events as $event) {
-			if($event instanceof UsedWrongPasswordWhenReading) {
-				$attemps++;
-			}
-		}
-
-		return $attemps;
 	}
 }
