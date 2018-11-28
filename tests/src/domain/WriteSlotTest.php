@@ -30,6 +30,12 @@ class WriteSlotTest extends TestCase
 		$this->assertInstanceOf(WriteSlotWasWritten::class, $events[0]);
 	}
 
+	public function no_event_is_created_if_used_constructor()
+	{
+		$this->writeSlot = new WriteSlot('uid1', 'uid2', 'this is my secret');
+		$this->assertCount(0, $this->writeSlot->getEvents());
+	}
+
 	/**
 	 * @test
 	 * @expectedException \Exception
