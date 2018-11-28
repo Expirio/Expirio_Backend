@@ -39,7 +39,7 @@ class CommandHandler
 		$writeSlot = $this->redisManager->fetchSlot($command->getWriteUid());
 		
 		if ($writeSlot && $writeSlot instanceof WriteSlot) {
-			$readlot = $this->redisManager->fetchSlot($command->getReadUid());
+			$readlot = $this->redisManager->fetchSlot($readSlot->getReadUid());
 			
 			if ($readSlot && $readSlot instanceof ReadSlot) {
 			    $readsSlot->setSecret($command->getSecret());
