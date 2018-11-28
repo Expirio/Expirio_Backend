@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group domain
  */
-class ReadSlotTest extends TestCase
+class ReadSLotOnSettingSecretTest extends TestCase
 {
 	/** @var ReadSlot */
 	private $readSlot;
@@ -20,12 +20,10 @@ class ReadSlotTest extends TestCase
 		$this->readSlot = new ReadSlot('uid1', 'sesamo1234');
 	}
 
-	// setting the secret....
-
 	/**
 	 * @test
 	 */
-	public function when_secret_is_set_then_data_is_protected()
+	public function when_set_then_data_is_protected()
 	{
 		$this->readSlot->setSecret('this is my secret');
 
@@ -53,42 +51,5 @@ class ReadSlotTest extends TestCase
 	{
 		$this->readSlot->setSecret('this is my secret');
 		$this->readSlot->setSecret('this is my secret again');
-	}
-
-	// decrypting the secret....
-
-	/**
-	 * @test
-	 */
-	public function can_decrypt_secret_with_proper_password()
-	{
-		$decryptedSecret = $this->readSlot
-			->setSecret('this is my secret')
-			->revealSecret('sesamo1234');
-
-		$this->assertEquals('this is my secret', $decryptedSecret);
-	}
-
-	/**
-	 * @test
-	 * @expectedException \Exception
-	 * @expectedExceptionMessage  Invalid password
-	 */
-	public function exception_is_thrown_is_invalid_password_is_used()
-	{
-		$this->readSlot
-			->setSecret('this is my secret')
-			->revealSecret('wrong passwod');
-	}
-
-	/**
-	 * @test
-	 * @expectedException \Exception
-	 * @expectedExceptionMessage  Maximum attempts reached with wrong password
-	 */
-	public function limit_attemps_to_decrypt_work_as_expected()
-	{
-		$readSlot = new ReadSlot('uid1', 'sesamo1234', 'encrypted text here',  3);
-		$readSlot->revealSecret('wrong passwod 1');
 	}
 }
