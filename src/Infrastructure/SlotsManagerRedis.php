@@ -42,13 +42,10 @@ class SlotsManagerRedis
 	public function persistSlot($slot)
 	{
 		if ($slot instanceof WriteSlot) {
-			// IMPORTANT: I TRIED TO DELETE FROM REDIS THIS WRITE SLOT AND UPDATE (PERSISTINT AS WELL) THE READ ONE. THIS APPROACH IS REALLY WRONG
-			// THE REASON IS THAT IT STORES TWO AGGREGATES IN ONLY ONE TRANSACTION, WHICH CREATE PROBLEMS AND HARDER CODE TO MAINTAIN. (ALSO TESTS
-			// WERE MUCH MORE DIFFICULT)
-			$this->redis->hmset($slot->getGuid(), [
-				'read_slot' => $slot->getReadUi(),
-				'secret' => $slot->getSecret()
-			]);
+			$this->redis->hmset(
+				$slot->getGuid(),
+				['read_slot' => $slot->getReadUi()]
+			);
 		}
 
 		if ($slot instanceof ReadSlot) {

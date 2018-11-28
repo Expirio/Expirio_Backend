@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Tests\src\Application\Service;
 
 use App\Application\Service\CommandHandler;
@@ -20,6 +19,8 @@ class CommandHandlerTest extends TestCase
 {
 	private $manager;
 	private $redis;
+
+	/** @var CommandHandler */
 	private $handler;
 
 	public function setUp()
@@ -64,28 +65,32 @@ class CommandHandlerTest extends TestCase
 		$this->assertInstanceOf(ReadSlot::class, $read);
 	}
 
-	public function testWriteSecretCheckFirstlyTypeOfSlotForWrongType()
+	/**
+	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage The write-slot doesnt exist or is not a write-slot
+	 */
+	public function cannot_execute_a_write_in_a_read_slot()
 	{
-		$command = new WriteSecretCommand('writeuid', 'this is my secret');
+		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
+		$setSecretCommand = new WriteSecretCommand('readuid', 'this is my secret');
 
-		$stubManager = $this->createConfiguredMock(SlotsManagerRedis::class, [
-			'fetchSlot' => new ReadSlot('writeuid', 'readUid')
-		]);
-
-		$result = (new CommandHandler($stubManager))->handle($command);
-		$this->assertFalse($result, 'a secret cannot be written in a write read slot');
+		$this->handler->handle($createPairCommand);
+		$this->handler->handle($setSecretCommand);
 	}
 
+	/**
+	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage The write-slot doesnt exist or is not a write-slot
+	 */
 	public function testWhenSlotDoesntExist()
 	{
-		$command = new WriteSecretCommand('writeuid', 'this is my secret');
+		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
+		$setSecretCommand = new WriteSecretCommand('non_existing_slot_uid', 'this is my secret');
 
-		$stubManager = $this->createConfiguredMock(SlotsManagerRedis::class, [
-			'fetchSlot' => null
-		]);
-
-		$result = (new CommandHandler($stubManager))->handle($command);
-		$this->assertFalse($result, 'a secret cannot be written in a write read slot');
+		$this->handler->handle($createPairCommand);
+		$this->handler->handle($setSecretCommand);
 	}
 
 	/**
@@ -93,15 +98,15 @@ class CommandHandlerTest extends TestCase
 	 * Read secret
 	 *
 	 */
-	public function testReadSecret()
-	{
-		$command = new ReadSecretCommand('readuid', 'sesame1234');
-
-		$stubManager = $this->createConfiguredMock(SlotsManagerRedis::class, [
-			'fetchSlot' => new ReadSlot('writeuid', 'readUid')
-		]);
-
-		$secret = (new CommandHandler($stubManager))->handle($command);
-
-	}
+//	public function testReadSecret()
+//	{
+//		$command = new ReadSecretCommand('readuid', 'sesame1234');
+//
+//		$stubManager = $this->createConfiguredMock(SlotsManagerRedis::class, [
+//			'fetchSlot' => new ReadSlot('writeuid', 'readUid')
+//		]);
+//
+//		$secret = (new CommandHandler($stubManager))->handle($command);
+//
+//	}
 }

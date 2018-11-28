@@ -1,10 +1,10 @@
- <?php
-
+<?php
 namespace App\Application\Service;
 
 use App\Domain\ReadSlot\ReadSlot;
 use App\Domain\WriteSlot\WriteSlot;
 use App\Infrastructure\SlotsManagerRedis;
+use Exception;
 use ReflectionClass;
 
 class CommandHandler
@@ -39,13 +39,15 @@ class CommandHandler
 		$writeSlot = $this->redisManager->fetchSlot($command->getWriteUid());
 		
 		if ($writeSlot && $writeSlot instanceof WriteSlot) {
-			$readlot = $this->redisManager->fetchSlot($readSlot->getReadUid());
+			$readSlot = $this->redisManager->fetchSlot($writeSlot->getReadUi());
 			
 			if ($readSlot && $readSlot instanceof ReadSlot) {
-			    $readsSlot->setSecret($command->getSecret());
-                            $this->redisManager->persistSlot($readSlot);
+				$readSlot->setSecret($command->getSecret());
+				$this->redisManager->persistSlot($readSlot);
 			    $this->redisManager->deleteSlot($writeSlot);
 			}
+		} else {
+			throw new Exception('The write-slot doesnt exist or is not a write-slot');
 		}
 	}
 
