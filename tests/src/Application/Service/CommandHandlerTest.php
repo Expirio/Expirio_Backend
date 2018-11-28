@@ -95,6 +95,22 @@ class CommandHandlerTest extends TestCase
 
 	/**
 	 * @test
+	 */
+	public function can_receive_the_secret_if_used_proper_password()
+	{
+		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
+		$setSecretCommand = new WriteSecretCommand('writeuid', 'this is my secret');
+		$this->handler->handle($createPairCommand);
+		$this->handler->handle($setSecretCommand);
+
+		$readQuery = new ReadSecretQuery('readuid', 'sesame1234');
+		$secret = $this->handler->handle($readQuery);
+
+		$this->assertEquals('this is my secret', $secret);
+	}
+
+	/**
+	 * @test
 	 * @expectedException \Exception
 	 * @expectedExceptionMessage The read slot doesnt exist or the password is invalid
 	 */
