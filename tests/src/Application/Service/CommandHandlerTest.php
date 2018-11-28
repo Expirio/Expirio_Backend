@@ -5,9 +5,9 @@ use App\Application\Service\CommandHandler;
 use App\Application\Service\CreatePairSlotsCommand;
 use App\Application\Service\PairSlot;
 use App\Application\Service\ReadSecretCommand;
+use App\Application\Service\ReadSecretQuery;
 use App\Application\Service\WriteSecretCommand;
 use App\Domain\ReadSlot\ReadSlot;
-use App\Domain\WriteSlot\WriteSlot;
 use App\Infrastructure\SlotsManagerRedis;
 use PHPUnit\Framework\TestCase;
 use Predis\Client;
@@ -94,19 +94,31 @@ class CommandHandlerTest extends TestCase
 	}
 
 	/**
-	 *
-	 * Read secret
-	 *
+	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage The read slot doesnt exist or the password is invalid
 	 */
-//	public function testReadSecret()
-//	{
-//		$command = new ReadSecretCommand('readuid', 'sesame1234');
-//
-//		$stubManager = $this->createConfiguredMock(SlotsManagerRedis::class, [
-//			'fetchSlot' => new ReadSlot('writeuid', 'readUid')
-//		]);
-//
-//		$secret = (new CommandHandler($stubManager))->handle($command);
-//
-//	}
+	public function cannot_read_secret_if_slot_doesnt_exist()
+	{
+		$readQuery = new ReadSecretQuery('non_existing_uid', 'sesame1234');
+
+		$this->handler->handle($readQuery);
+	}
+
+	/**
+	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage Invalid password
+	 */
+	public function cannot_read_secret_if_password_is_wrong()
+	{
+		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
+		$setSecretCommand = new WriteSecretCommand('writeuid', 'this is my secret');
+		$this->handler->handle($createPairCommand);
+		$this->handler->handle($setSecretCommand);
+
+
+		$readQuery = new ReadSecretQuery('readuid', 'wrong_password');
+		$this->handler->handle($readQuery);
+	}
 }

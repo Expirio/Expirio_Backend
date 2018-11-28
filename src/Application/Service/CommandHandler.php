@@ -51,19 +51,14 @@ class CommandHandler
 		}
 	}
 
-	private function handleReadSecretCommand(ReadSecretCommand $command)
+	private function handleReadSecretQuery(ReadSecretQuery $command)
 	{
 		$readSlot = $this->redisManager->fetchSlot($command->getReadUid());
 
 		if ($readSlot && $readSlot instanceof ReadSlot) {
-			$secret = $readSlot->revealSecret($command->getPassword());
-			if ($secret) {
-				$this->redisManager->deleteSlot($readSlot);	
-			}
-			
-			return $secret;
+			return $readSlot->revealSecret($command->getPassword());
 		}
 
-		return null;
+		throw new Exception('The read slot doesnt exist or the password is invalid');
 	}
 }

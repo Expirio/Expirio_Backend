@@ -71,30 +71,14 @@ class ReadSlotTest extends TestCase
 
 	/**
 	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage  Invalid password
 	 */
-	public function events_when_wrong_password_is_used()
+	public function exception_is_thrown_is_invalid_password_is_used()
 	{
-		$this->readSlot->setSecret('this is my secret');
-
-		$this->readSlot->revealSecret('wrong password');
-		$this->readSlot->revealSecret('wrong password again');
-
-
-		$events = $this->readSlot->getEvents();
-		$this->assertInstanceOf(UsedWrongPasswordWhenReading::class, $events[1]);
-		$this->assertInstanceOf(UsedWrongPasswordWhenReading::class, $events[2]);
-	}
-
-	/**
-	 * @test
-	 */
-	public function secret_is_null_if_wrong_password_is_used()
-	{
-		$decrypted = $this->readSlot
+		$this->readSlot
 			->setSecret('this is my secret')
 			->revealSecret('wrong passwod');
-
-		$this->assertNull($decrypted);
 	}
 
 	/**
@@ -104,10 +88,7 @@ class ReadSlotTest extends TestCase
 	 */
 	public function limit_attemps_to_decrypt_work_as_expected()
 	{
-		$this->readSlot->setSecret('this is my secret');
-
-		$this->readSlot->revealSecret('wrong passwod 1');
-		$this->readSlot->revealSecret('wrong passwod 2');
-		$this->readSlot->revealSecret('wrong passwod 3');
+		$readSlot = new ReadSlot('uid1', 'sesamo1234', 'encrypted text here',  3);
+		$readSlot->revealSecret('wrong passwod 1');
 	}
 }

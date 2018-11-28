@@ -7,18 +7,18 @@ class WriteSecretCommand
 	private $writeUid;
 	private $secret;
 
-	public function __construct($writeUid, $secret)
+	public function __construct(String $writeUid, String $secret)
 	{
 		$this->writeUid = $writeUid;
 		$this->secret = $secret;
 	}
 
-	public function getWriteUid()
+	public function getWriteUid(): String
 	{
 		return $this->writeUid;
 	}
 
-	public function getSecret()
+	public function getSecret(): String
 	{
 		return $this->secret;
 	}

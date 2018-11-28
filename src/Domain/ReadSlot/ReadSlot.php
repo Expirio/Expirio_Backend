@@ -9,13 +9,15 @@ class ReadSlot
 	private $guid;
 	private $password;
 	private $secret;
+	private $amountFailedAttempts;
 	private $events = [];
 
-	public function __construct($guid, $password, $secret = null, $expiration = null)
+	public function __construct($guid, $password, $secret = null, Int $amountFailedAttempts = 0, $expiration = null)
 	{
 		$this->guid = $guid;
 		$this->password = $password;
 		$this->secret = $secret;
+		$this->amountFailedAttempts = $amountFailedAttempts;
 	}
 
 	public function getEvents()
@@ -45,13 +47,13 @@ class ReadSlot
 		}
 
 		if (sha1($clearPassword) !== $this->password) {
-			$this->events[] = new UsedWrongPasswordWhenReading($this->guid);
+			$this->amountFailedAttempts++;
 
-			if($this->getAmountOfAttempts() >=3) {
+			if($this->amountFailedAttempts >=3) {
 				throw new Exception('Maximum attempts reached with wrong password');
 			}
 
-			return null;
+			throw new Exception('Invalid password');
 		}
 
 		return $this->decrypt($this->secret, $clearPassword);
