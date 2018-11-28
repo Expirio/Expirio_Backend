@@ -43,72 +43,72 @@ class SlotsManagerRedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function can_create_read_and_write()
+	public function can_write_and_read_a_write_slot()
 	{
-		$read = new ReadSlot($this->readuid, 'sesamo1234');
 		$write = new WriteSlot($this->writeuid, $this->readuid);
 
 		$this->manager->persistSlot($write);
+
+		$writeslot = $this->manager->fetchSlot($this->writeuid);
+
+		$this->assertInstanceOf(WriteSlot::class, $writeslot);
+		$this->assertNull($writeslot->getSecret());
+		$this->assertEquals($this->writeuid, $writeslot->getGuid());
+		$this->assertEquals($this->readuid, $writeslot->getReadUi());
+	}
+
+	/**
+	 * @test
+	 */
+	public function can_write_and_read_a_write_slot_with_secret()
+	{
+		$write = new WriteSlot($this->writeuid, $this->readuid);
+		$write->setSecret('this is my secret');
+
+		$this->manager->persistSlot($write);
+
+		$writeslot = $this->manager->fetchSlot($this->writeuid);
+
+		$this->assertEquals('this is my secret', $writeslot->getSecret());
+		$this->assertEquals($this->writeuid, $writeslot->getGuid());
+		$this->assertEquals($this->readuid, $writeslot->getReadUi());
+
+	}
+
+	/**
+	 * @test
+	 */
+	public function can_write_and_read_a_read_slot()
+	{
+		$read = new ReadSlot($this->readuid, 'sesamo1234');
+
 		$this->manager->persistSlot($read);
 
 		$readslot = $this->manager->fetchSlot($this->readuid);
-		$writeslot = $this->manager->fetchSlot($this->writeuid);
 
 		$this->assertInstanceOf(ReadSlot::class, $readslot);
-		$this->assertInstanceOf(WriteSlot::class, $writeslot);
+		$this->assertNull($readslot->getSecret());
+		$this->assertEquals($this->readuid, $readslot->getGuid());
+		$this->assertEquals('sesamo1234', $readslot->getPassword());
 	}
+
 
 	/**
 	 * @test
 	 */
-	public function when_write_secret_then_write_slot_is_deleted()
+	public function can_write_and_read_a_read_slot_with_secret()
 	{
-		$read = new ReadSlot($this->readuid, 'sesamo1234');
-		$write = new WriteSlot($this->writeuid, $this->readuid);
-		$this->manager->persistSlot($write);
+		$read = new ReadSlot($this->readuid, 'sesamo1234', 'this is a secret');
+
 		$this->manager->persistSlot($read);
 
-		$writeSlot = $this->manager
-			->fetchSlot($this->writeuid)
-			->setSecret('this is a secret');
+		$readslot = $this->manager->fetchSlot($this->readuid);
 
-		$this->manager->persistSlot($writeSlot);
-
-		$write = $this->manager->fetchSlot($this->writeuid);
-		$this->assertNull($write, 'write slot dissapear once that is written');
+		$this->assertInstanceOf(ReadSlot::class, $readslot);
+		$this->assertEquals('this is a secret', $readslot->getSecret());
+		$this->assertEquals($this->readuid, $readslot->getGuid());
+		$this->assertEquals('sesamo1234', $readslot->getPassword());
 	}
-
-	/**
-	 * @test
-	 */
-	public function when_write_secret_then_read_is_updated()
-	{
-		$read = new ReadSlot($this->readuid, 'sesamo1234');
-		$write = new WriteSlot($this->writeuid, $this->readuid);
-		$this->manager->persistSlot($write);
-		$this->manager->persistSlot($read);
-
-		$read = $this->manager->fetchSlot($this->readuid);
-		$this->assertEquals('sesamo1234', $read->getPassword(), 'There is no secret yet, so the password is in clear text for now, there is no secret');
-
-		$writeSlot = $this->manager
-			->fetchSlot($this->writeuid)
-			->setSecret('this is a secret');
-		$this->manager->persistSlot($writeSlot);
-
-		$read = $this->manager->fetchSlot($this->readuid);
-		$this->assertTrue($read->getPassword() !== 'sesamo1234', 'Now there is a secret, so the password shouldnt be clear');
-		$this->assertTrue($read->getSecret() !== 'this is a secret', 'The secret must be encrypted');
-	}
-
-	/**
-	 * @test
-	 */
-	public function can_read_secret()
-	{
-		$this->markTestSkipped('not implemented yet');
-	}
-
 
 	public function tearDown()
 	{

@@ -7,9 +7,8 @@ use Exception;
 class ReadSlot
 {
 	private $guid;
-	private $secret;
 	private $password;
-
+	private $secret;
 	private $events = [];
 
 	public function __construct($guid, $password, $secret = null, $expiration = null)
@@ -34,7 +33,7 @@ class ReadSlot
 		return $this->password;
 	}
 
-	public function getSecret(): String
+	public function getSecret(): ?String
 	{
 		return $this->secret;
 	}
