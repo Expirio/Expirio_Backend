@@ -3,8 +3,8 @@
 
 - [ ]  Persist amount of attempts trying to reveal the secret
 - [ ]  Add expiration time
-- [ ]  Add routes
-- [ ]  Add read and write template
+- [ ]  Add routes framework
+- [ ]  Add read and write templates
 
 
 ## System:
