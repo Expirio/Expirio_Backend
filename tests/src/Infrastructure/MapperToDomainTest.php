@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Tests\src\Infrastructure;
 
 use App\Domain\ReadSlot\ReadSlot;

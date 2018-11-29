@@ -6,7 +6,6 @@ use App\Application\Service\CreatePairSlotsCommand;
 use App\Application\Service\ReadSecretCommand;
 use App\Application\Service\ReadSecretQuery;
 use App\Application\Service\WriteSecretCommand;
-use App\Domain\ReadSlot\ReadSlot;
 use App\Infrastructure\SlotsManagerRedis;
 use App\Tests\src\domain\builders\ReadSlotBuilder;
 use PHPUnit\Framework\TestCase;

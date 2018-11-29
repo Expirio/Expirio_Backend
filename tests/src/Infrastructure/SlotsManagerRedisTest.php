@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Tests\src\Infrastructure;
 
 use App\Application\CreatePairSlotsCommand;
 use App\Domain\ReadSlot\ReadSlot;
-use App\Domain\WriteSlot\WriteSlot;
 use App\Infrastructure\SlotsManagerRedis;
 use App\Tests\src\domain\builders\ReadSlotBuilder;
 use App\Tests\src\domain\builders\WriteSlotBuilder;
@@ -102,7 +100,6 @@ class SlotsManagerRedisTest extends TestCase
 
 		$this->assertEquals($read, $readslot);
 	}
-
 
 	/**
 	 * @test

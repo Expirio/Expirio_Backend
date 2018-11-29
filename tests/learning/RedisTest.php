@@ -117,6 +117,21 @@ class RedisTest extends TestCase
 
 	}
 
+	/**
+	 * @test
+	 */
+	public function can_set_expiration_for_data()
+	{
+		$hash = ['country' => 'Africa', 'age' => 12];
+
+		$this->redis->hmset('person', $hash);
+		$this->redis->expire('person', 2);
+
+		$this->assertSame(1, $this->redis->exists('person'), 'still exist');
+		sleep(2);
+		$this->assertSame(0, $this->redis->exists('person'), 'it doesnt exist anymore');
+	}
+
 	public function tearDown()
 	{
 		$this->redis->flushall();
