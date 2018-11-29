@@ -10,36 +10,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group infrastructure
  */
-class MapperTest extends TestCase
+class MapperToPersistenceTest extends TestCase
 {
-	/**
-	 * @test
-	 */
-	public function read_to_domain()
-	{
-		$givenDataForReadGuid = [
-			'password' => 'mypassword',
-			'attempts' => 2,
-			'secret' => null
-		];
-
-		$readSlot = Mapper::toDomain('guid1', $givenDataForReadGuid);
-
-		$this->assertInstanceOf(ReadSlot::class, $readSlot);
-	}
-
-	/**
-	 * @test
-	 */
-	public function write_to_domain()
-	{
-		$givenDataForReadGuid = ['read_slot' => 'guid2'];
-
-		$writeSlot = Mapper::toDomain('guid1', $givenDataForReadGuid);
-
-		$this->assertInstanceOf(WriteSlot::class, $writeSlot);
-	}
-
 	/**
 	 * @test
 	 */
@@ -53,7 +25,7 @@ class MapperTest extends TestCase
 			'password' => 'password1',
 			'secret' => null,
 			'attempts' => 0
-			], $persistData);
+		], $persistData);
 	}
 
 	/**
