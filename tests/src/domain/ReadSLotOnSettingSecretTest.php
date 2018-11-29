@@ -5,6 +5,7 @@ namespace App\Tests\src\domain;
 use App\Domain\ReadSlot\ReadSlot;
 use App\Domain\ReadSlot\SecretWasWrittenInReadSlot;
 use App\Domain\ReadSlot\UsedWrongPasswordWhenReading;
+use App\Tests\src\domain\builders\ReadSlotBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,7 +18,10 @@ class ReadSLotOnSettingSecretTest extends TestCase
 
 	public function setUp()
 	{
-		$this->readSlot = new ReadSlot('uid1', 'sesamo1234');
+		$this->readSlot = ReadSlotBuilder::anyWithNoSecret()
+			->withPassword('sesamo1234')
+			->withAmountOfFailures(0)
+			->build();
 	}
 
 	/**
