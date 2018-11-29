@@ -8,6 +8,7 @@ use App\Application\Service\ReadSecretQuery;
 use App\Application\Service\WriteSecretCommand;
 use App\Domain\ReadSlot\ReadSlot;
 use App\Infrastructure\SlotsManagerRedis;
+use App\Tests\src\domain\builders\ReadSlotBuilder;
 use PHPUnit\Framework\TestCase;
 use Predis\Client;
 
@@ -95,7 +96,13 @@ class CommandHandlerOnReadTest extends TestCase
 
 	private function givenReadSlotWithFailedAttempts($amount)
 	{
-		$readSlot = new ReadSlot('readuid', 'sesame1234', 'this is my secret', $amount);
+		$readSlot = ReadSlotBuilder::anyWithNoSecret()
+			->withGuid('readuid')
+			->withPassword('sesamo1234')
+			->withAmountOfFailures($amount)
+			->withSecret('this is my secret')
+			->build();
+
 		$this->manager->persistSlot($readSlot);
 	}
 }
