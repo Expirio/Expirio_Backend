@@ -5,6 +5,8 @@ namespace App\Tests\src\Infrastructure;
 use App\Domain\ReadSlot\ReadSlot;
 use App\Domain\WriteSlot\WriteSlot;
 use App\Infrastructure\Mapper;
+use App\Tests\src\domain\builders\ReadSlotBuilder;
+use App\Tests\src\domain\builders\WriteSlotBuilder;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -17,7 +19,10 @@ class MapperToPersistenceTest extends TestCase
 	 */
 	public function read_to_persistence()
 	{
-		$givenSlot = new ReadSlot('guid1', 'password1');
+		$givenSlot  = ReadSlotBuilder::anyWithNoSecret()
+			->withPassword('password1')
+			->withAmountOfFailures(0)
+			->build();
 
 		$persistData = Mapper::toPersistence($givenSlot);
 
@@ -33,7 +38,11 @@ class MapperToPersistenceTest extends TestCase
 	 */
 	public function read_with_attempts_to_persistence()
 	{
-		$givenSlot = new ReadSlot('guid1', 'password1', 'this is my secret', 2);
+		$givenSlot  = ReadSlotBuilder::anyWithNoSecret()
+			->withPassword('password1')
+			->withSecret('this is my secret')
+			->withAmountOfFailures(2)
+			->build();
 
 		$persistData = Mapper::toPersistence($givenSlot);
 
@@ -49,7 +58,7 @@ class MapperToPersistenceTest extends TestCase
 	 */
 	public function write_to_persistence()
 	{
-		$givenSlot = new WriteSlot('guid1', 'readguid1');
+		$givenSlot = WriteSlotBuilder::any()->withReadGuid('readguid1')->build();
 
 		$persistData = Mapper::toPersistence($givenSlot);
 
