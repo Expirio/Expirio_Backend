@@ -29,5 +29,9 @@ class Mapper
 				'attempts' => $slotDomain->getAmountOfAttempts()
 			];
 		}
+
+		if ($slotDomain instanceof WriteSlot) {
+			return ['read_slot' => $slotDomain->getReadUi()];
+		}
 	}
 }

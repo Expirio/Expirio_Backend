@@ -38,18 +38,15 @@ class SlotsManagerRedis
 		if ($slot instanceof WriteSlot) {
 			$this->redis->hmset(
 				$slot->getGuid(),
-				['read_slot' => $slot->getReadUi()]
+				Mapper::toPersistence($slot)
 			);
 		}
 
 		if ($slot instanceof ReadSlot) {
-			$data = [
-				'password' => $slot->getPassword(),
-				'secret' => $slot->getSecret(),
-				'attempts' => $slot->getAmountOfAttempts()
-			];
-
-			$this->redis->hmset($slot->getGuid(), $data);
+			$this->redis->hmset(
+				$slot->getGuid(),
+				Mapper::toPersistence($slot)
+			);
 		}
 
 		return $this;

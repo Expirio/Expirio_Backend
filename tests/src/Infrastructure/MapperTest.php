@@ -53,7 +53,20 @@ class MapperTest extends TestCase
 			'password' => 'password1',
 			'secret' => null,
 			'attempts' => 0
-			], $persistData
-		);
+			], $persistData);
+	}
+
+	/**
+	 * @test
+	 */
+	public function write_to_persistence()
+	{
+		$givenSlot = new WriteSlot('guid1', 'readguid1');
+
+		$persistData = Mapper::toPersistence($givenSlot);
+
+		$this->assertEquals([
+			'read_slot' => 'readguid1'
+		], $persistData);
 	}
 }
