@@ -65,7 +65,8 @@ class CommandHandler
 			}
 
 			if($readSlot->getAmountOfAttempts() >= 3) {
-				throw new Exception('Reading slot: Max amount of attempts reached');
+				$this->redisManager->deleteSlot($readSlot);
+				throw new Exception('Reading slot: Max failed attempts readched');
 			} elseif ($readSlot->getAmountOfAttempts() >= 0) {
 				$this->redisManager->persistSlot($readSlot);
 				throw new Exception('Reading slot: Invalid password');

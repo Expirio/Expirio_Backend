@@ -66,7 +66,7 @@ class CommandHandlerOnReadTest extends TestCase
 	 */
 	public function cannot_read_secret_if_password_is_wrong()
 	{
-		$this->givenAPair();
+		$this->givenReadSlotWithFailedAttempts(1);
 
 		$readQuery = new ReadSecretQuery('readuid', 'wrong_password');
 		$this->handler->handle($readQuery);
@@ -75,18 +75,14 @@ class CommandHandlerOnReadTest extends TestCase
 	/**
 	 * @test
 	 * @expectedException \Exception
-	 * @expectedExceptionMessage Reading slot: Max amount of attempts reached
+	 * @expectedExceptionMessage Reading slot: Max failed attempts readched
 	 */
 	public function read_is_deleted_if_attempted_toomuch()
 	{
-		$readSlot = new ReadSlot('readuid', 'sesame1234', 'this is my secret', 3);
-		$this->manager->persistSlot($readSlot);
+		$this->givenReadSlotWithFailedAttempts(2);
 
 		$readQuery1 = new ReadSecretQuery('readuid', 'wrong password 1');
-
-
-		$this->handler->handle($readQuery1);
-
+		$this->handler->hansdle($readQuery1);
 	}
 
 	private function givenAPair()
@@ -95,5 +91,11 @@ class CommandHandlerOnReadTest extends TestCase
 		$setSecretCommand = new WriteSecretCommand('writeuid', 'this is my secret');
 		$this->handler->handle($createPairCommand);
 		$this->handler->handle($setSecretCommand);
+	}
+
+	private function givenReadSlotWithFailedAttempts($amount)
+	{
+		$readSlot = new ReadSlot('readuid', 'sesame1234', 'this is my secret', $amount);
+		$this->manager->persistSlot($readSlot);
 	}
 }
