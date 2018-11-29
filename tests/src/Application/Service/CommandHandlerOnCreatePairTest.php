@@ -5,7 +5,6 @@ use App\Application\Service\CommandHandler;
 use App\Application\Service\CreatePairSlotsCommand;
 use App\Application\Service\PairSlot;
 use App\Application\Service\ReadSecretCommand;
-use App\Application\Service\WriteSecretCommand;
 use App\Infrastructure\SlotsManagerRedis;
 use PHPUnit\Framework\TestCase;
 use Predis\Client;

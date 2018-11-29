@@ -26,6 +26,7 @@ class MapperToDomainTest extends TestCase
 		$readSlot = Mapper::toDomain('guid1', $givenDataForReadGuid);
 
 		$this->assertInstanceOf(ReadSlot::class, $readSlot);
+		$this->assertEquals(2, $readSlot->getAmountOfAttempts());
 	}
 
 	/**

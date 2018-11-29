@@ -31,6 +31,22 @@ class MapperToPersistenceTest extends TestCase
 	/**
 	 * @test
 	 */
+	public function read_with_attempts_to_persistence()
+	{
+		$givenSlot = new ReadSlot('guid1', 'password1', 'this is my secret', 2);
+
+		$persistData = Mapper::toPersistence($givenSlot);
+
+		$this->assertEquals([
+			'password' => 'password1',
+			'secret' => 'this is my secret',
+			'attempts' => 2
+		], $persistData);
+	}
+
+	/**
+	 * @test
+	 */
 	public function write_to_persistence()
 	{
 		$givenSlot = new WriteSlot('guid1', 'readguid1');
