@@ -24,7 +24,7 @@ class MapperTest extends TestCase
 		];
 
 		$readSlot = Mapper::toDomain('guid1', $givenDataForReadGuid);
-		
+
 		$this->assertInstanceOf(ReadSlot::class, $readSlot);
 	}
 
@@ -38,5 +38,22 @@ class MapperTest extends TestCase
 		$writeSlot = Mapper::toDomain('guid1', $givenDataForReadGuid);
 
 		$this->assertInstanceOf(WriteSlot::class, $writeSlot);
+	}
+
+	/**
+	 * @test
+	 */
+	public function read_to_persistence()
+	{
+		$givenSlot = new ReadSlot('guid1', 'password1');
+
+		$persistData = Mapper::toPersistence($givenSlot);
+
+		$this->assertEquals([
+			'password' => 'password1',
+			'secret' => null,
+			'attempts' => 0
+			], $persistData
+		);
 	}
 }

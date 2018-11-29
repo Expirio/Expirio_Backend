@@ -19,4 +19,15 @@ class Mapper
 			return new WriteSlot($guid, $persistenceData['read_slot'], $secret);
 		}
 	}
+
+	public static function toPersistence($slotDomain)
+	{
+		if ($slotDomain instanceof ReadSlot) {
+			return [
+				'password' => $slotDomain->getPassword(),
+				'secret' => $slotDomain->getSecret(),
+				'attempts' => $slotDomain->getAmountOfAttempts()
+			];
+		}
+	}
 }
