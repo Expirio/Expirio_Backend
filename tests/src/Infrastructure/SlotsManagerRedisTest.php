@@ -6,6 +6,8 @@ use App\Application\CreatePairSlotsCommand;
 use App\Domain\ReadSlot\ReadSlot;
 use App\Domain\WriteSlot\WriteSlot;
 use App\Infrastructure\SlotsManagerRedis;
+use App\Tests\src\domain\builders\ReadSlotBuilder;
+use App\Tests\src\domain\builders\WriteSlotBuilder;
 use PHPUnit\Framework\TestCase;
 use Predis\Client;
 use Ramsey\Uuid\Uuid;
@@ -56,15 +58,14 @@ class SlotsManagerRedisTest extends TestCase
 	 */
 	public function can_persist_write_slot()
 	{
-		$write = new WriteSlot($this->writeuid, $this->readuid);
+		$write = WriteSlotBuilder::any()
+			->withReadGuid($this->readuid)
+			->withWriteGuid($this->writeuid)
+			->build();
 
-		$this->manager->persistSlot($write);
+		$writeslot = $this->manager->persistSlot($write)->fetchSlot($this->writeuid);
 
-		$writeslot = $this->manager->fetchSlot($this->writeuid);
-
-		$this->assertInstanceOf(WriteSlot::class, $writeslot);
-		$this->assertEquals($this->writeuid, $writeslot->getGuid());
-		$this->assertEquals($this->readuid, $writeslot->getReadUi());
+		$this->assertEquals($write, $writeslot);
 	}
 
 	// Read slot
@@ -74,16 +75,15 @@ class SlotsManagerRedisTest extends TestCase
 	 */
 	public function can_persist_basic_read_slot()
 	{
-		$read = new ReadSlot($this->readuid, 'sesamo1234');
+		$read = ReadSlotBuilder::anyWithNoSecret()
+			->withGuid($this->readuid)
+			->withPassword('sesamo1234')
+			->withAmountOfFailures(0)
+			->build();
 
-		$this->manager->persistSlot($read);
+		$readslot = $this->manager->persistSlot($read)->fetchSlot($this->readuid);
 
-		$readslot = $this->manager->fetchSlot($this->readuid);
-
-		$this->assertInstanceOf(ReadSlot::class, $readslot);
-		$this->assertNull($readslot->getSecret());
-		$this->assertEquals($this->readuid, $readslot->getGuid());
-		$this->assertEquals('sesamo1234', $readslot->getPassword());
+		$this->assertEquals($read, $readslot);
 	}
 
 	/**
@@ -91,13 +91,16 @@ class SlotsManagerRedisTest extends TestCase
 	 */
 	public function can_persist_read_slot_with_some_attempts()
 	{
-		$read = new ReadSlot($this->readuid, 'sesamo1234', 'any secret', 4);
+		$read = ReadSlotBuilder::anyWithNoSecret()
+			->withGuid($this->readuid)
+			->withPassword('sesamo1234')
+			->withAmountOfFailures(4)
+			->withSecret('any secret')
+			->build();
 
-		$this->manager->persistSlot($read);
-		$readslot = $this->manager->fetchSlot($this->readuid);
+		$readslot = $this->manager->persistSlot($read)->fetchSlot($this->readuid);
 
-		$this->assertInstanceOf(ReadSlot::class, $readslot);
-		$this->assertEquals(4, $readslot->getAmountOfAttempts());
+		$this->assertEquals($read, $readslot);
 	}
 
 
@@ -106,15 +109,16 @@ class SlotsManagerRedisTest extends TestCase
 	 */
 	public function can_write_and_read_a_read_slot_with_secret()
 	{
-		$read = new ReadSlot($this->readuid, 'sesamo1234');
-		$read->setSecret('this is a secret');
+		$read = ReadSlotBuilder::anyWithNoSecret()
+			->withGuid($this->readuid)
+			->withPassword('sesamo1234')
+			->withAmountOfFailures(0)
+			->build()
+			->setSecret('this is a secret');
 
-		$this->manager->persistSlot($read);
-
-		$readslot = $this->manager->fetchSlot($this->readuid);
+		$readslot = $this->manager->persistSlot($read)->fetchSlot($this->readuid);
 
 		$this->assertInstanceOf(ReadSlot::class, $readslot);
-		$this->assertEquals($this->readuid, $readslot->getGuid());
 		$this->assertTrue('this is a secret' !== $readslot->getSecret());
 		$this->assertTrue('sesamo1234' !== $readslot->getPassword());
 		$this->assertTrue('this is a secret' == $readslot->revealSecret('sesamo1234'));
