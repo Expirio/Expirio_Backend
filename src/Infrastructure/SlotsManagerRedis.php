@@ -26,14 +26,8 @@ class SlotsManagerRedis
 	{
 		$persistenceData = $this->redis->hgetall($guid);
 
-		if (isset($persistenceData['password'])) {
-			$secret = !empty($persistenceData['secret']) ? $persistenceData['secret'] :  null;
-			return new ReadSlot($guid, $persistenceData['password'], $secret, $persistenceData['attempts']);
-		}
-
-		if (isset($persistenceData['read_slot'])) {
-			$secret = !empty($persistenceData['secret']) ? $persistenceData['secret'] :  null;
-			return new WriteSlot($guid, $persistenceData['read_slot'], $secret);
+		if ($persistenceData) {
+			return Mapper::toDomain($guid, $persistenceData);
 		}
 
 		return null;

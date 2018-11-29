@@ -27,6 +27,12 @@ class RedisTest extends TestCase
 		$this->assertEquals('PONG', $response->getPayload(), "Install and run redis-server");
 	}
 
+	public function returned_value_for_no_existing_key()
+	{
+		$result = $this->redis->hgetall('this doesnt exist');
+		$this->assertNull($result);
+	}
+
 	/**
 	 * @test
 	 */

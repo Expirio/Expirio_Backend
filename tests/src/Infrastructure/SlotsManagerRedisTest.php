@@ -40,6 +40,15 @@ class SlotsManagerRedisTest extends TestCase
 		$this->manager = new SlotsManagerRedis($this->redis);
 	}
 
+	/**
+	 * @test
+	 */
+	public function returned_value_when_guid_doesnt_exist()
+	{
+		$writeslot = $this->manager->fetchSlot('this doesnt exist');
+		$this->assertNull($writeslot);
+	}
+
 	// Write slot
 
 	/**
