@@ -82,7 +82,7 @@ class CommandHandlerOnReadTest extends TestCase
 		$this->givenReadSlotWithFailedAttempts(2);
 
 		$readQuery1 = new ReadSecretQuery('readuid', 'wrong password 1');
-		$this->handler->hansdle($readQuery1);
+		$this->handler->handle($readQuery1);
 	}
 
 	private function givenAPair()
