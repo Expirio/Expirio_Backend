@@ -14,14 +14,16 @@ class ReadSlotBuilder
 	private $amountFailedAttempts;
 	private $expiration;
 
-	public function any() {
+	public static function any() {
 		$faker = Factory::create();
 
-		$this->guid = Uuid::uuid4()->toString();
-		$this->password = $faker->word;
-		$this->secret = $faker->sentence;
-		$this->amountFailedAttempts = $faker->numberBetween(0, 2);
-		$this->expiration = $faker->dateTimeThisYear;
+		$self = new self();
+		return $self
+			->withGuid(Uuid::uuid4()->toString())
+			->withPassword($faker->word)
+			->withSecret($faker->sentence)
+			->withAmountOfFailures($faker->numberBetween(0, 2))
+			->withExpiration($faker->dateTimeThisYear);
 	}
 
 	public function withGuid($guid)

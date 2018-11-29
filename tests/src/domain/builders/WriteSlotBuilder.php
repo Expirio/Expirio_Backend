@@ -10,9 +10,13 @@ class WriteSlotBuilder
 	private $writeGuid;
 	private $readGuid;
 
-	public function any() {
-		$this->readGuid = Uuid::uuid4()->toString();
-		$this->readGuid = Uuid::uuid4()->toString();
+	public static function any()
+	{
+		$self = new Self();
+
+		return $self
+			->withReadGuid(Uuid::uuid4()->toString())
+			->withWriteGuid(Uuid::uuid4()->toString());
 	}
 
 	public function withReadGuid($readGuid)
