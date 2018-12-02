@@ -12,7 +12,7 @@
 | Read slot: 6bdc77c4-8a6e-4358-b403-114ce4b8ae20, Write slot: 65fca850-277d-4d74-b875-f9629c8f3215 | {read_url:	"/6bdc77c4-8a6e-4358-b403-114ce4b8ae20", write_url:	"/65fca850-277d-4d74-b875-f9629c8f3215"} |
 
 
-
+### Redis state:
 <table>
   <thead>
     <td>key</td>
