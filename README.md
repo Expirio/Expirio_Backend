@@ -22,6 +22,7 @@
 
 **Create slot:** ```bin/console pair:create --password=sesame1 --expire_in=PT5S```                                                                                                                                         
 
+> => Output:
 >    Read slot: 6bdc77c4-8a6e-4358-b403-114ce4b8ae20
 >
 >    Write slot: 65fca850-277d-4d74-b875-f9629c8f3215
@@ -49,7 +50,7 @@
     <td>
        
       {
-         "read_slot" : "27ccd457-848d-4399-beb6-69b629e431be"
+         "read_slot" : "6bdc77c4-8a6e-4358-b403-114ce4b8ae20"
       }
         
    </td>
@@ -57,6 +58,10 @@
  </table>
 
 **Write secret:** bin/console pair:write --writeuid=65fca850-277d-4d74-b875-f9629c8f3215 --secret="this is my secret"
+
+> Output => 
+>
+>     Secret stored
 
 <table>
   <thead>
