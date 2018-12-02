@@ -58,9 +58,9 @@
   </tr>
  </table>
 
-**Write secret:** bin/console pair:write --writeuid=65fca850-277d-4d74-b875-f9629c8f3215 --secret="this is my secret"
+**Write secret:** 
 
-> Output => 
+> bin/console pair:write --writeuid=65fca850-277d-4d74-b875-f9629c8f3215 --secret="this is my secret"
 >
 >     Secret stored
 
