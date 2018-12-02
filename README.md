@@ -15,11 +15,12 @@
 
 - [ ] Think about deploying
 
+----
 
 ## Cli commands:
 
-Create slot:     
-```bin/console pair:create --password=sesame1 --expire_in=PT5S```                                                                                                                                         
+
+**Create slot:** ```bin/console pair:create --password=sesame1 --expire_in=PT5S```                                                                                                                                         
 
 >    Read slot: 6bdc77c4-8a6e-4358-b403-114ce4b8ae20
 >
