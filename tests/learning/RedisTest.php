@@ -128,7 +128,7 @@ class RedisTest extends TestCase
 		$this->redis->expire('person', 2);
 
 		$this->assertSame(1, $this->redis->exists('person'), 'still exist');
-		sleep(2);
+		sleep(3);
 		$this->assertSame(0, $this->redis->exists('person'), 'it doesnt exist anymore');
 	}
 

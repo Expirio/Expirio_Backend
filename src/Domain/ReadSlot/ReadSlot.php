@@ -12,7 +12,7 @@ class ReadSlot
 	private $amountFailedAttempts;
 	private $events = [];
 
-	public function __construct($guid, $password, $secret = null, Int $amountFailedAttempts = 0, $expiration = null)
+	public function __construct($guid, $password, $secret = null, Int $amountFailedAttempts = 0)
 	{
 		$this->guid = $guid;
 		$this->password = $password;

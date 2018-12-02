@@ -43,7 +43,7 @@ class SlotsManagerRedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function returned_value_when_guid_doesnt_exist()
+	public function returned_null_when_guid_doesnt_exist()
 	{
 		$writeslot = $this->manager->fetchSlot('this doesnt exist');
 		$this->assertNull($writeslot);
@@ -71,29 +71,11 @@ class SlotsManagerRedisTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function can_persist_basic_read_slot()
+	public function can_persist_read_slot()
 	{
 		$read = ReadSlotBuilder::anyWithNoSecret()
 			->withGuid($this->readuid)
 			->withPassword('sesamo1234')
-			->withAmountOfFailures(0)
-			->build();
-
-		$readslot = $this->manager->persistSlot($read)->fetchSlot($this->readuid);
-
-		$this->assertEquals($read, $readslot);
-	}
-
-	/**
-	 * @test
-	 */
-	public function can_persist_read_slot_with_some_attempts()
-	{
-		$read = ReadSlotBuilder::anyWithNoSecret()
-			->withGuid($this->readuid)
-			->withPassword('sesamo1234')
-			->withAmountOfFailures(4)
-			->withSecret('any secret')
 			->build();
 
 		$readslot = $this->manager->persistSlot($read)->fetchSlot($this->readuid);
@@ -109,7 +91,6 @@ class SlotsManagerRedisTest extends TestCase
 		$read = ReadSlotBuilder::anyWithNoSecret()
 			->withGuid($this->readuid)
 			->withPassword('sesamo1234')
-			->withAmountOfFailures(0)
 			->build()
 			->setSecret('this is a secret');
 
