@@ -52,6 +52,22 @@ class CommandHandlerOnReadTest extends TestCase
 	 * @expectedException \Exception
 	 * @expectedExceptionMessage The read-slot doesnt exist or the password to read is invalid
 	 */
+	public function secret_is_deleted_after_reading()
+	{
+		$this->givenAPair();
+
+		$readQuery = new ReadSecretQuery('readuid', 'sesame1234');
+		$secret = $this->handler->handle($readQuery);
+
+		$this->assertEquals('this is my secret', $secret);
+		$this->handler->handle($readQuery);
+	}
+
+	/**
+	 * @test
+	 * @expectedException \Exception
+	 * @expectedExceptionMessage The read-slot doesnt exist or the password to read is invalid
+	 */
 	public function cannot_read_if_readid_is_incorrect()
 	{
 		$readQuery = new ReadSecretQuery('WRONG_READ_ID', 'sesame1234');

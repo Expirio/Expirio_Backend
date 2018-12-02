@@ -3,9 +3,13 @@ namespace App\Ui\Controllers;
 
 use App\Application\Service\CommandHandler;
 use App\Application\Service\CreatePairSlotsCommand;
+use App\Application\Service\ReadSecretQuery;
+use App\Application\Service\WriteSecretCommand;
 use App\Infrastructure\SlotsManagerRedis;
 use Predis\Client;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +31,7 @@ class MainController extends AbstractController
 	}
 
 	/**
-	 * @Route("/create/{password}/{expirationPeriod}", name="create")
+	 * @Route("/create/{password}/{expirationPeriod}", name="create", methods={"GET"})
 	 * @example
 	 *         /create/mypass/PT3H
 	 *         /create/mypass/P3D
@@ -44,31 +48,35 @@ class MainController extends AbstractController
 			)
 		);
 
-		return new Response(
-			json_encode([
-				'read_url' => $slots->getReaduid(),
-				'write_url' => $slots->getWriteuid(),
-			])
-		);
+		return new JsonResponse([
+			'read_url' => '/' . $slots->getReaduid(),
+			'write_url' => '/' . $slots->getWriteuid(),
+		]);
 	}
 
 	/**
-	 * @Route("/write", name="write")
+	 * @Route("/write/{writeuid}", name="write", methods={"PUT"})
 	 */
-	public function write()
+	public function write($writeuid, Request $request)
 	{
-		return new Response(
-			'<html><body>write</body></html>'
+		$secret = $request->getContent();
+
+		$this->handler->handle(
+			new WriteSecretCommand($writeuid, $secret)
 		);
+
+		return new Response();
 	}
 
 	/**
-	 * @Route("/read", name="read")
+	 * @Route("/read/{readuid}/{password}", name="read", methods={"GET"})
 	 */
-	public function read()
+	public function read($readuid, $password)
 	{
-		return new Response(
-			'<html><body>Read</body></html>'
+		$secret = $this->handler->handle(
+			new ReadSecretQuery($readuid, $password)
 		);
+
+		return new Response($secret);
 	}
 }

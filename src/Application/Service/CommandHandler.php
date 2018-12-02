@@ -64,6 +64,7 @@ class CommandHandler
 			$secret = $readSlot->revealSecret($command->getPassword());
 
 			if ($secret) {
+				$this->redisManager->deleteSlot($readSlot);
 				return $secret;
 			}
 
