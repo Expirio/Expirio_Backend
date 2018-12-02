@@ -1,8 +1,8 @@
 
 ## Todo
 
-- [ ] Add routes framework
-- [ ] Add read and write templates
+- [ ] Write E2E tests to check also how we handles edge cases and error responses
+
 
 ----
 # Create slot
