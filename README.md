@@ -49,7 +49,7 @@
 | CLI | HTTP(PUT) |
 |-- |--- |
 | bin/console pair:write --writeuid=65fca850-277d-4d74-b875-f9629c8f3215 --secret="this is my secret" | 127.0.0.1:8000/write/65fca850-277d-4d74-b875-f9629c8f3215 |
-| Secret stored | 200 response |  
+| OK | 200 |  
 
 ### Redis state 
 
