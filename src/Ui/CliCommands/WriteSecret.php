@@ -49,6 +49,6 @@ class WriteSecret extends Command
 
 		$this->handler->handle($WriteSecretCommand);
 
-		print_r('Secret stored');
+		print_r('OK');
 	}
 }
