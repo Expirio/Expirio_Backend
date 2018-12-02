@@ -36,7 +36,7 @@ class CommandHandlerOnCreatePairTest extends TestCase
 	 */
 	public function create_pair()
 	{
-		$command = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
+		$command = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234', 'P1D');
 
 		$pair = $this->handler->handle($command);
 

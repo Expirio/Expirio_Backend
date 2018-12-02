@@ -77,7 +77,7 @@ class CommandHandlerOnWriteTest extends TestCase
 
 	private function givenAPair()
 	{
-		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234');
+		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234', 'P1D');
 		$setSecretCommand = new WriteSecretCommand('writeuid', 'this is my secret');
 		$this->handler->handle($createPairCommand);
 		$this->handler->handle($setSecretCommand);
