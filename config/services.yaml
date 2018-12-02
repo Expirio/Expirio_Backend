@@ -34,3 +34,11 @@ services:
     App\Ui\CliCommands\CreatePair:
         tags:
         - { name: console.command, command: 'pair:create' }
+
+    App\Ui\CliCommands\WriteSecret:
+        tags:
+        - { name: console.command, command: 'pair:write' }
+
+    App\Ui\CliCommands\ReadSecret:
+        tags:
+        - { name: console.command, command: 'pair:read' }

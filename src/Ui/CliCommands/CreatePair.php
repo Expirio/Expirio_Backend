@@ -55,6 +55,5 @@ class CreatePair extends Command
 
 		echo "\nRead slot: " . $pair->getReadUid() . "\n";
 		echo "\nWrite slot: " .  $pair->getWriteUid() ."\n";
-
 	}
 }
