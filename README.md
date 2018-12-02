@@ -8,7 +8,7 @@
 # Create slot
 | CLI | HTTP(GET) |
 |-- |--- |
-| bin/console pair:create --password=sesame1 --expire_in=PT200S | http://127.0.0.1:8000/create/mypassword/P5D |
+| bin/console pair:create --password=sesame1 --expire_in=PT200S | http://127.0.0.1:8000/create/sesame1/P5D |
 | Read slot: 6bdc77c4-8a6e-4358-b403-114ce4b8ae20, Write slot: 65fca850-277d-4d74-b875-f9629c8f3215 | {read_url:	"/6bdc77c4-8a6e-4358-b403-114ce4b8ae20", write_url:	"/65fca850-277d-4d74-b875-f9629c8f3215"} |
 
 
@@ -74,11 +74,15 @@
  </table>
 
 
-## Cli: Read secret
+# Read slot
 
-> bin/console pair:read --readuid=6bdc77c4-8a6e-4358-b403-114ce4b8ae20 --password='sesame1'
->
->        This is my secret
+| CLI | HTTP(GET) | 
+|--- |--- |
+| bin/console pair:read --readuid=6bdc77c4-8a6e-4358-b403-114ce4b8ae20 --password='sesame1' | http://127.0.0.1:8000/read/6bdc77c4-8a6e-4358-b403-114ce4b8ae20/sesame1 |
+| This is my secret | This is my secret  |
+
+
+### Redis state
 
 <table>
   <thead>
