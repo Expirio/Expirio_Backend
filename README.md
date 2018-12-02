@@ -26,13 +26,37 @@
 >
 >    Write slot: 65fca850-277d-4d74-b875-f9629c8f3215
 
-| Key | Value | 
-|--- |--- |
-| | | 
+<table>
+  <thead>
+    <td>key</td>
+    <td>Value</td>
+  </thead>
+
+  <tr>
+    <td>6bdc77c4-8a6e-4358-b403-114ce4b8ae20</td>
+    <td>
+       
+     {
+       "password" : "sesame1",
+       "attempts" : "0",
+       "secret" : ""
+     }
+        
+   </td>
+  </tr>
+  <tr>
+    <td>65fca850-277d-4d74-b875-f9629c8f3215</td>
+    <td>
+       
+      {
+         "read_slot" : "27ccd457-848d-4399-beb6-69b629e431be"
+      }
+        
+   </td>
+  </tr>
+ </table>
 
 **Write secret:** bin/console pair:write --writeuid=65fca850-277d-4d74-b875-f9629c8f3215 --secret="this is my secret"
-
-> Secret stored
 
 <table>
   <thead>
