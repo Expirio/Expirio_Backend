@@ -83,3 +83,17 @@
    </td>
   </tr>
  </table>
+
+
+### Read secret
+
+> bin/console pair:read --readuid=6bdc77c4-8a6e-4358-b403-114ce4b8ae20 --password='sesame1'
+>
+>        This is my secret
+
+<table>
+  <thead>
+    <td>key</td>
+    <td>Value</td>
+  </thead>
+ </table>
