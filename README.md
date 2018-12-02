@@ -20,7 +20,7 @@
 ## Cli commands:
 
 
-**Create slot:**                                                                                                                                         
+### reate slot:                                                                                                                                    
 
 > bin/console pair:create --password=sesame1 --expire_in=PT5S
 > 
@@ -58,7 +58,7 @@
   </tr>
  </table>
 
-**Write secret:** 
+### Write secret:
 
 > bin/console pair:write --writeuid=65fca850-277d-4d74-b875-f9629c8f3215 --secret="this is my secret"
 >
