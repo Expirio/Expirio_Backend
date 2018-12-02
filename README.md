@@ -20,7 +20,7 @@
 ## Cli commands:
 
 
-### reate slot:                                                                                                                                    
+### Create slot:                                                                                                                                    
 
 > bin/console pair:create --password=sesame1 --expire_in=PT5S
 > 
