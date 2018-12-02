@@ -3,7 +3,6 @@
 namespace App\Infrastructure;
 
 use App\Domain\ReadSlot\ReadSlot;
-use App\Domain\ReadSlot\SecretWasWrittenInReadSlot;
 use App\Domain\WriteSlot\WriteSlot;
 use Predis\Client;
 
@@ -31,6 +30,12 @@ class SlotsManagerRedis
 		}
 
 		return null;
+	}
+
+	public function setExpiration(String $guid, Int $expirationTimeInSeconds)
+	{
+		$this->redis->expire($guid, $expirationTimeInSeconds);
+		return $this;
 	}
 
 	public function persistSlot($slot)

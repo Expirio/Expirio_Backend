@@ -61,7 +61,7 @@ class SlotsManagerRedisTest extends TestCase
 			->withWriteGuid($this->writeuid)
 			->build();
 
-		$writeslot = $this->manager->persistSlot($write)->fetchSlot($this->writeuid);
+		$writeslot = $this->manager->persistSlot($write, 100)->fetchSlot($this->writeuid);
 
 		$this->assertEquals($write, $writeslot);
 	}
@@ -78,7 +78,7 @@ class SlotsManagerRedisTest extends TestCase
 			->withPassword('sesamo1234')
 			->build();
 
-		$readslot = $this->manager->persistSlot($read)->fetchSlot($this->readuid);
+		$readslot = $this->manager->persistSlot($read, 100)->fetchSlot($this->readuid);
 
 		$this->assertEquals($read, $readslot);
 	}
@@ -94,12 +94,31 @@ class SlotsManagerRedisTest extends TestCase
 			->build()
 			->setSecret('this is a secret');
 
-		$readslot = $this->manager->persistSlot($read)->fetchSlot($this->readuid);
+		$readslot = $this->manager->persistSlot($read, 100)->fetchSlot($this->readuid);
 
 		$this->assertInstanceOf(ReadSlot::class, $readslot);
 		$this->assertTrue('this is a secret' !== $readslot->getSecret());
 		$this->assertTrue('sesamo1234' !== $readslot->getPassword());
 		$this->assertTrue('this is a secret' == $readslot->revealSecret('sesamo1234'));
+	}
+
+	/**
+	 * @test
+	 */
+	public function can_set_expiration_time()
+	{
+		$read = ReadSlotBuilder::anyWithNoSecret()
+			->withGuid($this->readuid)
+			->withPassword('sesamo1234')
+			->build()
+			->setSecret('this is a secret');
+
+		$this->manager->persistSlot($read, 100)->setExpiration($read->getGuid(), 2);
+
+		sleep(3);
+		$readslot = $this->manager->fetchSlot($this->readuid);
+
+		$this->assertNull($readslot);
 	}
 
 	public function tearDown()

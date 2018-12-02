@@ -7,22 +7,22 @@ use App\Domain\WriteSlot\WriteSlot;
 
 class PairSlot
 {
-	private $read;
-	private $write;
+	private $readUid;
+	private $writeUid;
 
 	public function __construct(ReadSlot $readSlot, WriteSlot $writeSlot)
 	{
-		$this->read = $readSlot->getGuid();
-		$this->write = $writeSlot->getGuid();
+		$this->readUid = $readSlot->getGuid();
+		$this->writeUid = $writeSlot->getGuid();
 	}
 
-	public function getWrite(): String
+	public function getWriteUid(): String
 	{
-		return $this->write;
+		return $this->writeUid;
 	}
 
-	public function getRead(): String
+	public function getReadUid(): String
 	{
-		return $this->read;
+		return $this->readUid;
 	}
 }

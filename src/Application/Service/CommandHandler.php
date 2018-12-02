@@ -32,6 +32,9 @@ class CommandHandler
 		$this->redisManager->persistSlot($write);
 		$this->redisManager->persistSlot($read);
 
+		$this->redisManager->setExpiration($command->getReadUid(), $command->getExpirationSeconds());
+		$this->redisManager->setExpiration($command->getWriteUid(), $command->getExpirationSeconds());
+
 		return new PairSlot($read, $write);
 	}
 

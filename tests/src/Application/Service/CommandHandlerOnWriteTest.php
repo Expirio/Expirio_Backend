@@ -70,14 +70,28 @@ class CommandHandlerOnWriteTest extends TestCase
 	{
 		$this->givenAPair();
 
-		$setSecretCommand = new WriteSecretCommand('non_existing_slot_uid', 'this is my secret');
+		$writeSecretCommand = new WriteSecretCommand('non_existing_slot_uid', 'this is my secret');
 
-		$this->handler->handle($setSecretCommand);
+		$this->handler->handle($writeSecretCommand);
 	}
 
-	private function givenAPair()
+	/**
+	 * @test
+	 * @expectedException Exception
+	 * @expectedExceptionMessage Cannot write secret: The write-slot doesnt exist or is not a write-slot
+	 */
+	public function cannot_write_in_an_expired_slot()
 	{
-		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234', 'P1D');
+		$this->givenAPair('PT2S');
+		sleep(3);
+		$writeSecretCommand = new WriteSecretCommand('writeuid', 'this is my secret');
+
+		$this->handler->handle($writeSecretCommand);
+	}
+
+	private function givenAPair(String $expirationTime = 'P1D')
+	{
+		$createPairCommand = new CreatePairSlotsCommand('writeuid', 'readuid', 'sesame1234', $expirationTime);
 		$setSecretCommand = new WriteSecretCommand('writeuid', 'this is my secret');
 		$this->handler->handle($createPairCommand);
 		$this->handler->handle($setSecretCommand);
