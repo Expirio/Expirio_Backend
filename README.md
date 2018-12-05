@@ -47,7 +47,11 @@ http://127.0.0.1:8000/create
  </table>
 
 --- 
-# Write slot
+# Write slot page(GET)
+
+127.0.0.1:8000/write/65fca850-277d-4d74-b875-f9629c8f3215
+
+# Write slot action
 
 | CLI | HTTP(PUT) |
 |-- |--- |
