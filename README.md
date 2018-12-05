@@ -5,7 +5,10 @@
 
 
 ----
-# Create slot
+# Create slot page
+http://127.0.0.1:8000/create
+
+# Create slot Action
 | CLI | HTTP(GET) |
 |-- |--- |
 | bin/console pair:create --password=sesame1 --expire_in=PT200S | http://127.0.0.1:8000/create/sesame1/P5D |
@@ -44,7 +47,11 @@
  </table>
 
 --- 
-# Write slot
+# Write slot page(GET)
+
+127.0.0.1:8000/write/65fca850-277d-4d74-b875-f9629c8f3215
+
+# Write slot action
 
 | CLI | HTTP(PUT) |
 |-- |--- |
@@ -74,8 +81,10 @@
  </table>
 
 ---
+# Read slot page(display form for password)
+http://127.0.0.1:8000/read/6bdc77c4-8a6e-4358-b403-114ce4b8ae20
 
-# Read slot
+# Read slot action
 
 | CLI | HTTP(GET) | 
 |--- |--- |
