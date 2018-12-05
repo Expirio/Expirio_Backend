@@ -49,7 +49,7 @@ class WriteSecret extends Command
 
 		$this->handler->handle($WriteSecretCommand);
 
-		
+
 		print_r('OK');
 	}
 }
