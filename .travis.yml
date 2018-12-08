@@ -8,7 +8,7 @@ install:
 
 before_script:
   - sudo apt-get install redis
-  - redis-server
+  - redis-server &
   - composer self-update
   - composer install --prefer-source --no-interaction
 
