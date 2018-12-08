@@ -1,3 +1,5 @@
+
+![Build](https://img.shields.io/badge/Build-travis-organe.svg)
 [![Build Status](https://travis-ci.com/Expirio/Expirio_Backend.svg?branch=develop)](https://travis-ci.com/Expirio/Expirio_Backend)
 [![License](https://poser.pugx.org/apinstein/expiring-hash/license)](https://packagist.org/packages/apinstein/expiring-hash)
 
