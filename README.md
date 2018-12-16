@@ -1,8 +1,7 @@
 
-![Build](https://img.shields.io/badge/Build-travis-blue.svg)
 [![Build Status](https://travis-ci.com/Expirio/Expirio_Backend.svg?branch=develop)](https://travis-ci.com/Expirio/Expirio_Backend)
 [![License](https://poser.pugx.org/apinstein/expiring-hash/license)](https://packagist.org/packages/apinstein/expiring-hash)
-
+![Build history](https://buildstats.info/travisci/chart/Expirio/Expirio_Backend?branch=develop)
 
 ## Todo
 
