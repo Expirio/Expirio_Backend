@@ -8,6 +8,12 @@
 
 - [ ] Write E2E tests to check also how we handles edge cases and error responses
 
+## Setup and Run
+```
+composer install
+php bin/console server:stop
+redis-server
+```
 
 ----
 # Create slot page
