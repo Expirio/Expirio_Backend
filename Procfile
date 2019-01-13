@@ -1,1 +1,1 @@
-web: bin/console server:stop
+web: php bin/console server:stop
