@@ -1,1 +1,3 @@
-web: php bin/console server:start
+web: php bin/console server:start *:80
+
+
