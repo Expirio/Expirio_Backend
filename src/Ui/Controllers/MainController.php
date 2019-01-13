@@ -31,6 +31,15 @@ class MainController extends AbstractController
 	}
 
 	/**
+	 * @Route("/healthcheck", name="healthcheck", methods={"GET"})
+	 */
+	public function healthcheck()
+	{
+		return new JsonResponse(['state' => 'Running']);
+	}
+
+
+	/**
 	 * @Route("/create/{password}/{expirationPeriod}", name="create", methods={"GET"})
 	 * @example
 	 *         /create/mypass/PT3H
