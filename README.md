@@ -13,7 +13,7 @@
 composer install
 php bin/console server:stop
 redis-server
-=> http://127.0.0.1:8000/healthcheck
+=> http://127.0.0.1:8000/ping
 ```
 
 
